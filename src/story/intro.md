@@ -111,11 +111,15 @@
 
 这位智慧之神，除了可爱之外，更是充满了无限的魅力。
 
+![bg fade-out duration-1000][bg-2]
+
 ……
 
 我和纳西妲相互凝视了一会，不知道该做什么。
 
 突然，我伸出手来，轻轻地握住了她的手。
+
+![bg fade-in duration-1000][bg-3]
 
 # 我
 
@@ -155,4 +159,5 @@
 
 [bg-1]: ../assets/images/background/bg-1.png "cover top to-bottom"
 [bg-2]: ../assets/images/background/bg-2.png "cover top to-bottom"
+[bg-3]: ../assets/images/background/bg-3.png "cover top to-bottom"
 [bgm-flower]: ../assets/audio/music/flower.mp3
