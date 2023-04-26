@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vvw: min(1vw, 1vh * 16 / 9);
+  --vvh: min(1vh, 1vw * 9 / 16);
+}
+
+@font-face {
+  font-family: hanyi;
+  src: url(./assets/fonts/hanyi.ttf);
+}
+
+body {
+  @apply w-[100vw] h-[100vh] bg-black relative;
+}
+
+#app {
+  @apply absolute inset-0 m-auto max-w-full max-h-full aspect-video;
+
+  font-family: hanyi;
+}

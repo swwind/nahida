@@ -1,0 +1,58 @@
+{
+  "name": "markdown-story",
+  "version": "1.0.0",
+  "main": "./dist/parser.mjs",
+  "type": "module",
+  "license": "MIT",
+  "sideEffect": false,
+  "exports": {
+    ".": {
+      "import": "./dist/parser.mjs",
+      "require": "./dist/parser.cjs",
+      "types": "./dist/types/parser/index.d.ts"
+    },
+    "./preact": {
+      "import": "./dist/preact.mjs",
+      "require": "./dist/preact.cjs",
+      "types": "./dist/types/preact/index.d.ts"
+    },
+    "./vite": {
+      "import": "./dist/vite.mjs",
+      "require": "./dist/vite.cjs",
+      "types": "./dist/types/vite/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "yarn build:tsc && yarn build:vite:esm && yarn build:vite:cjs && yarn build:preact:esm && yarn build:preact:cjs && yarn build:parser:esm && yarn build:parser:cjs && yarn build:example",
+    "build:example": "tsc --noEmit && vite build",
+    "build:tsc": "tsc app/vite/index.ts app/parser/index.ts app/preact/index.ts --outDir lib/types --declaration --emitDeclarationOnly --lib esnext --skipLibCheck --downlevelIteration",
+    "build:vite:esm": "esbuild app/vite/index.ts --bundle --format=esm --platform=node --minify --outfile=lib/vite.mjs --external:rollup-pluginutils --external:remark --external:remark-inline-links",
+    "build:vite:cjs": "esbuild app/vite/index.ts --bundle --format=cjs --platform=node --minify --outfile=lib/vite.cjs --external:rollup-pluginutils --external:remark --external:remark-inline-links",
+    "build:preact:esm": "esbuild app/preact/index.ts --bundle --format=esm --platform=browser --minify --outfile=lib/preact.mjs --external:preact --external:@preact/signals",
+    "build:preact:cjs": "esbuild app/preact/index.ts --bundle --format=cjs --platform=browser --minify --outfile=lib/preact.cjs --external:preact --external:@preact/signals",
+    "build:parser:esm": "esbuild app/parser/index.ts --bundle --format=esm --platform=node --minify --outfile=lib/parser.mjs --external:remark --external:remark-inline-links",
+    "build:parser:cjs": "esbuild app/parser/index.ts --bundle --format=cjs --platform=node --minify --outfile=lib/parser.cjs --external:remark --external:remark-inline-links",
+    "test": "uvu -r esbuild-register",
+    "dev": "vite dev"
+  },
+  "dependencies": {
+    "@preact/signals": "^1.1.3",
+    "preact": "^10.13.2",
+    "remark": "^14.0.2",
+    "remark-inline-links": "^6.0.1",
+    "rollup-pluginutils": "^2.8.2"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.5.0",
+    "autoprefixer": "^10.4.14",
+    "esbuild": "^0.17.18",
+    "esbuild-register": "^3.4.2",
+    "sass": "^1.62.1",
+    "tailwindcss": "^3.3.2",
+    "tailwindcss-animate": "^1.0.5",
+    "typescript": "^5.0.4",
+    "uvu": "^0.5.6",
+    "vite": "^4.3.2",
+    "vite-tsconfig-paths": "^4.2.0"
+  }
+}
