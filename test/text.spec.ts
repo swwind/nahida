@@ -2,7 +2,7 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { parseStory } from "../app/parser";
 
-const heading = `import { background, foreground, charactor, removeCharactor, text, select, backgroundMusic, soundEffect } from "@markdown-story";`;
+const heading = `import { background, foreground, character, removeCharacter, text, select, backgroundMusic, soundEffect } from "@markdown-story";`;
 
 test("headings", () => {
   const story = parseStory(
@@ -194,10 +194,10 @@ test("image", () => {
     `yield background(story_0);`,
     `yield foreground(story_1);`,
     `yield backgroundMusic(story_3);`,
-    `yield charactor(story_4, "alice");`,
-    `yield charactor(story_5, "alice");`,
-    `yield charactor(story_5, "alice");`,
-    `yield removeCharactor("alice");`,
+    `yield character(story_4, "alice");`,
+    `yield character(story_5, "alice");`,
+    `yield character(story_5, "alice");`,
+    `yield removeCharacter("alice");`,
     `yield text("你们说的对", "", story_2);`,
     `}`,
   ].join("\n");

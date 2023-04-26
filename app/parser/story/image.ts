@@ -58,11 +58,11 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
     const char = alt.find((v) => v.startsWith("+") || v.startsWith("-"))!;
     const identity = char.slice(1);
     if (char.startsWith("-")) {
-      ctx.yield({ type: "remove-charactor", identity });
+      ctx.yield({ type: "remove-character", identity });
     } else {
       const url = ctx.importUrl(image.url + "?url");
       const animation = alt.filter((x) => x !== char).join(" ");
-      ctx.yield({ type: "charactor", url, identity, animation });
+      ctx.yield({ type: "character", url, identity, animation });
     }
     return;
   }

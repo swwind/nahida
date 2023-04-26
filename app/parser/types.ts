@@ -12,15 +12,15 @@ export type ForegroundAction = {
   imageAnimation: string;
 };
 
-export type CharactorAction = {
-  type: "charactor";
+export type CharacterAction = {
+  type: "character";
   url: string;
   identity: string;
   animation: string;
 };
 
-export type RemoveCharactorAction = {
-  type: "remove-charactor";
+export type RemoveCharacterAction = {
+  type: "remove-character";
   identity: string;
 };
 
@@ -49,8 +49,8 @@ export type BackgroundMusicAction = {
 export type Action =
   | BackgroundAction
   | ForegroundAction
-  | CharactorAction
-  | RemoveCharactorAction
+  | CharacterAction
+  | RemoveCharacterAction
   | SoundEffectAction
   | TextAction
   | SelectAction

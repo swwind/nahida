@@ -46,8 +46,8 @@ export function markdownStory(options?: Options): Plugin {
 const inlineStory = `
 export const background = (url, parentAnimation = "", imageAnimation = "") => ({ type: "background", url, parentAnimation, imageAnimation });
 export const foreground = (url, parentAnimation = "", imageAnimation = "") => ({ type: "foreground", url, parentAnimation, imageAnimation });
-export const charactor = (url, identity, animation = "") => ({ type: "charactor", url, identity, animation });
-export const removeCharactor = (identity) => ({ type: "remove-charactor", identity });
+export const character = (url, identity, animation = "") => ({ type: "character", url, identity, animation });
+export const removeCharacter = (identity) => ({ type: "remove-character", identity });
 export const text = (text, name = "", vocal = "") => ({ type: "text", text, name, vocal });
 export const select = (options) => ({ type: "select", options });
 export const backgroundMusic = (url) => ({ type: "bgm", url });
