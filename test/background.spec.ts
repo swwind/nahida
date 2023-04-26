@@ -2,7 +2,7 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { parseStory } from "../app/parser";
 
-const heading = `import { background, foreground, charactor, removeCharactor, text, select, backgroundMusic, soundEffect } from "@markdown-story";`;
+const heading = `import { background, foreground, character, removeCharacter, text, select, backgroundMusic, soundEffect } from "@markdown-story";`;
 
 test("background", () => {
   const story = parseStory(

@@ -87,11 +87,11 @@ export function useMarkdownStory(story: Story) {
             // TODO
             break;
           }
-          case "charactor": {
+          case "character": {
             // TODO
             break;
           }
-          case "remove-charactor": {
+          case "remove-character": {
             // TODO
             break;
           }

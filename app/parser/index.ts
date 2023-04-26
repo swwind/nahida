@@ -66,17 +66,17 @@ export function parseStory(markdown: string) {
             actions.push(`yield foreground(${a.url});`);
           }
           break;
-        case "charactor":
+        case "character":
           if (a.animation) {
             actions.push(
-              `yield charactor(${a.url}, ${s(a.identity)}, ${s(a.animation)});`
+              `yield character(${a.url}, ${s(a.identity)}, ${s(a.animation)});`
             );
           } else {
-            actions.push(`yield charactor(${a.url}, ${s(a.identity)});`);
+            actions.push(`yield character(${a.url}, ${s(a.identity)});`);
           }
           break;
-        case "remove-charactor":
-          actions.push(`yield removeCharactor(${s(a.identity)});`);
+        case "remove-character":
+          actions.push(`yield removeCharacter(${s(a.identity)});`);
           break;
         case "text":
           if (a.vocal) {
@@ -112,7 +112,7 @@ export function parseStory(markdown: string) {
   }
 
   return [
-    `import { background, foreground, charactor, removeCharactor, text, select, backgroundMusic, soundEffect } from "@markdown-story";`,
+    `import { background, foreground, character, removeCharacter, text, select, backgroundMusic, soundEffect } from "@markdown-story";`,
     ...imports,
     "export default function* (ctx) {",
     ...actions,
