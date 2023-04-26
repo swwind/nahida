@@ -33,6 +33,7 @@
     "build:parser:esm": "esbuild app/parser/index.ts --bundle --format=esm --platform=node --minify --outfile=lib/parser.mjs --external:remark --external:remark-inline-links",
     "build:parser:cjs": "esbuild app/parser/index.ts --bundle --format=cjs --platform=node --minify --outfile=lib/parser.cjs --external:remark --external:remark-inline-links",
     "test": "uvu -r esbuild-register",
+    "coverage": "c8 yarn test",
     "dev": "vite dev"
   },
   "dependencies": {
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
     "autoprefixer": "^10.4.14",
+    "c8": "^7.13.0",
     "esbuild": "^0.17.18",
     "esbuild-register": "^3.4.2",
     "sass": "^1.62.1",
