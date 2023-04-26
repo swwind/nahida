@@ -8,7 +8,3 @@ export interface StoryContext {
   append: (code: string) => void;
   yield: (action: Action) => void;
 }
-
-export function s(code: string | string[]) {
-  return JSON.stringify(code);
-}

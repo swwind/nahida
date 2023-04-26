@@ -44,12 +44,60 @@ export function markdownStory(options?: Options): Plugin {
 }
 
 const inlineStory = `
-export const background = (url, parentAnimation = "", imageAnimation = "") => ({ type: "background", url, parentAnimation, imageAnimation });
-export const foreground = (url, parentAnimation = "", imageAnimation = "") => ({ type: "foreground", url, parentAnimation, imageAnimation });
-export const character = (url, identity, animation = "") => ({ type: "character", url, identity, animation });
-export const removeCharacter = (identity) => ({ type: "remove-character", identity });
-export const text = (text, name = "", vocal = "") => ({ type: "text", text, name, vocal });
-export const select = (options) => ({ type: "select", options });
-export const backgroundMusic = (url) => ({ type: "bgm", url });
-export const soundEffect = (url) => ({ type: "sfx", url });
+export function deserialize(type, ...action) {
+  let index = 0;
+  const param = () => action[index++] || "";
+
+  switch (type) {
+    case 0:
+      return {
+        type: "background",
+        url: param(),
+        parentAnimation: param(),
+        imageAnimation: param(),
+      };
+    case 1:
+      return {
+        type: "foreground",
+        url: param(),
+        parentAnimation: param(),
+        imageAnimation: param(),
+      };
+    case 2:
+      return {
+        type: "character",
+        url: param(),
+        identity: param(),
+        animation: param(),
+      };
+    case 3:
+      return {
+        type: "remove-character",
+        identity: param(),
+      };
+    case 4:
+      return {
+        type: "sfx",
+        url: param(),
+      };
+    case 5:
+      return {
+        type: "text",
+        text: param(),
+        name: param(),
+        vocal: param(),
+      };
+    case 6:
+      return {
+        type: "select",
+        options: action,
+      };
+    case 7:
+      return {
+        type: "bgm",
+        url: param(),
+      };
+  }
+}
+
 `;
