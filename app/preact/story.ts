@@ -4,10 +4,10 @@ import { MutableRef, useEffect, useMemo, useRef } from "preact/hooks";
 import { ReadonlySignal } from "@preact/signals";
 
 import {
+  animateBackground,
+  animateImage,
   preload,
   preloadBackground,
-  transformBackgroundClassName,
-  transformImageClassName,
 } from "./utils";
 import { bgUrl, bgmAudio, name, show, selections } from "./signals";
 import { CallbackStack } from "./callback-stack";
@@ -75,20 +75,19 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
         console.log(action);
         switch (action.type) {
           case "background": {
-            if (!backgroundRef.current) {
+            const parent = backgroundRef.current;
+            if (!parent) {
               throw new Error("Background element missing");
             }
 
             if (bgUrl.value === action.url) {
               // if background not change, just replay animations
-              const background = backgroundRef.current
-                .firstChild as HTMLDivElement;
-              const image = background.firstChild as HTMLImageElement;
+              const background = parent.firstChild as HTMLDivElement;
+              animateBackground(background, action.parentAnimation);
 
-              background.className = transformBackgroundClassName(
-                action.parentAnimation
-              );
-              image.className = transformImageClassName(action.imageAnimation);
+              // FIXME: should not play animation again
+              // const image = background.firstChild as HTMLImageElement;
+              // animateImage(image, action.imageAnimation);
 
               await stack.waitAnimations(background);
             } else {
@@ -99,18 +98,13 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
                 action.imageAnimation
               );
 
-              backgroundRef.current.appendChild(background);
+              parent.appendChild(background);
               bgUrl.value = action.url;
 
               await stack.waitAnimations(background);
               // remove old backgrounds when animations done
-              if (
-                backgroundRef.current.firstChild &&
-                backgroundRef.current.firstChild !== background
-              ) {
-                backgroundRef.current.removeChild(
-                  backgroundRef.current.firstChild
-                );
+              if (parent.firstChild && parent.firstChild !== background) {
+                parent.removeChild(parent.firstChild);
               }
             }
 

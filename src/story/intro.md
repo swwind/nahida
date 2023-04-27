@@ -1,5 +1,5 @@
 ![bgm][bgm-boundless-bliss]
-![bg fade-in duration-1000][bg-1]
+![bg fade-in][bg-1]
 
 ---
 
@@ -32,7 +32,7 @@
 这时，纳西妲突然伸出手来，轻轻地拍了拍我的头。
 
 ![console](#hide)
-![bg fade-in duration-1000][bg-2]
+![bg fade-in][bg-2]
 ![console](#show)
 
 # 纳西妲
@@ -74,7 +74,7 @@
 2. [goto](./nahida-sci.md)
 
 ![console](#hide)
-![bg fade-out duration-1000][bg-2]
+![bg fade-out][bg-2]
 ![console](#show)
 
 ---
@@ -86,7 +86,7 @@
 突然，我伸出手来，轻轻地握住了她的手。
 
 ![console](#hide)
-![bg fade-in duration-1000][bg-3]
+![bg fade-in][bg-3]
 ![console](#show)
 
 # 我
@@ -148,7 +148,7 @@
 在阳光明媚的窗前，默默地享受着这份美好的时刻。
 
 ![console](#hide)
-![bg fade-out duration-1000][bg-3]
+![bg fade-out][bg-3]
 ![console](#show)
 
 ……

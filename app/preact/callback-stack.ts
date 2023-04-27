@@ -2,7 +2,17 @@
  * Manage all callbacks when user clicks
  */
 export class CallbackStack {
+  /**
+   * click callbacks
+   *
+   * text waiting, or animation skipping
+   */
   callbacks: (() => void)[] = [];
+  /**
+   * selection waiting
+   *
+   * no click callbacks can trigger before this resolves
+   */
   selection: ((data: number) => void) | null = null;
 
   async waitClick() {
