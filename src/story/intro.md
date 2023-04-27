@@ -1,4 +1,4 @@
-![bgm][bgm-flower]
+![bgm][bgm-boundless-bliss]
 ![bg fade-in duration-1000][bg-1]
 
 ---
@@ -166,4 +166,4 @@
 [bg-1]: ../assets/images/background/bg-1.png "cover top to-bottom"
 [bg-2]: ../assets/images/background/bg-2.png "cover top to-bottom"
 [bg-3]: ../assets/images/background/bg-3.png "cover top to-bottom"
-[bgm-flower]: ../assets/audio/music/flower.mp3
+[bgm-boundless-bliss]: ../assets/audio/music/boundless_bliss.mp3
