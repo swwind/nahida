@@ -1,25 +1,28 @@
 {
   "name": "markdown-story",
   "version": "1.0.0",
-  "main": "./dist/parser.mjs",
+  "main": "./lib/parser.mjs",
   "type": "module",
   "license": "MIT",
   "sideEffect": false,
+  "files": [
+    "lib"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/parser.mjs",
-      "require": "./dist/parser.cjs",
-      "types": "./dist/types/parser/index.d.ts"
+      "import": "./lib/parser.mjs",
+      "require": "./lib/parser.cjs",
+      "types": "./lib/types/parser/index.d.ts"
     },
     "./preact": {
-      "import": "./dist/preact.mjs",
-      "require": "./dist/preact.cjs",
-      "types": "./dist/types/preact/index.d.ts"
+      "import": "./lib/preact.mjs",
+      "require": "./lib/preact.cjs",
+      "types": "./lib/types/preact/index.d.ts"
     },
     "./vite": {
-      "import": "./dist/vite.mjs",
-      "require": "./dist/vite.cjs",
-      "types": "./dist/types/vite/index.d.ts"
+      "import": "./lib/vite.mjs",
+      "require": "./lib/vite.cjs",
+      "types": "./lib/types/vite/index.d.ts"
     }
   },
   "scripts": {
