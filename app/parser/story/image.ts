@@ -7,7 +7,7 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   const title = image.title ?? "";
 
   if (alt.includes("bg")) {
-    const url = ctx.import(image.url + "?url");
+    const url = ctx.import(image.url + "?url", "image");
     const deco = alt.filter((x) => x !== "bg").join(" ");
     ctx.yield({
       type: "background",
@@ -19,7 +19,7 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   }
 
   if (alt.includes("fg")) {
-    const url = ctx.import(image.url + "?url");
+    const url = ctx.import(image.url + "?url", "image");
     const deco = alt.filter((x) => x !== "fg").join(" ");
     ctx.yield({
       type: "foreground",
@@ -31,7 +31,7 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   }
 
   if (alt.includes("v")) {
-    const url = ctx.import(image.url + "?url");
+    const url = ctx.import(image.url + "?url", "audio");
     if (ctx.vocal) {
       throw new ParseError("Multiple vocal track detected", image.position);
     }
@@ -40,20 +40,20 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   }
 
   if (alt.includes("bgm")) {
-    const url = ctx.import(image.url + "?url");
+    const url = ctx.import(image.url + "?url", "audio");
     ctx.yield({ type: "bgm", url });
     return;
   }
 
   if (alt.includes("sfx")) {
-    const url = ctx.import(image.url + "?url");
+    const url = ctx.import(image.url + "?url", "audio");
     ctx.yield({ type: "sfx", url });
     return;
   }
 
   if (alt.some((v) => v.startsWith("+") || v.startsWith("-"))) {
     const char = alt.find((v) => v.startsWith("+") || v.startsWith("-"))!;
-    const url = ctx.import(image.url + "?url");
+    const url = ctx.import(image.url + "?url", "image");
     const identity = char.slice(1);
     const parentAnimation = alt
       .filter((x) => !x.startsWith("+") && !x.startsWith("-"))

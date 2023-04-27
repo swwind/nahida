@@ -15,21 +15,25 @@ function stringify(text: string) {
 }
 
 export function parseStory(markdown: string) {
-  const actions: string[] = [];
   const imports: string[] = [];
+  const preloads: string[] = [];
+  const actions: string[] = [];
   const importMap: Map<string, string> = new Map();
   const cacheMap: Map<string, string> = new Map();
 
   const ctx: StoryContext = {
     name: null,
     vocal: null,
-    import(url) {
+    import(url, type) {
       if (importMap.has(url)) {
         const name = importMap.get(url)!;
         return `\0${name}`;
       }
       const name = `story_${imports.length}`;
       imports.push(`import ${name} from "${url}";`);
+      if (type) {
+        preloads.push(`ctx.preload(${name}, "${type}");`);
+      }
       importMap.set(url, name);
       return `\0${name}`;
     },
@@ -69,6 +73,7 @@ export function parseStory(markdown: string) {
     `import { deserialize } from "@markdown-story";`,
     ...imports,
     "export default function* (ctx) {",
+    ...preloads,
     ...actions,
     "}",
   ].join("\n");

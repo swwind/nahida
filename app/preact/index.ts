@@ -68,6 +68,13 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
         show: () => (show.value = true),
         hide: () => (show.value = false),
       },
+      preload: (url, as) => {
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.href = url;
+        link.as = as;
+        document.head.appendChild(link);
+      },
     };
 
     async function start() {

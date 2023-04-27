@@ -36,6 +36,8 @@ test("headings", () => {
     `import story_2 from "./vocal/alice.wav?url";`,
     `import story_3 from "./vocal/alice2.wav?url";`,
     `export default function* (ctx) {`,
+    `ctx.preload(story_2, "audio");`,
+    `ctx.preload(story_3, "audio");`,
     `yield deserialize(5, "你说的对", name_0);`,
     `yield deserialize(5, "你说的不对", name_1);`,
     `yield deserialize(5, "我突然明白了什么", name_0, story_2);`,

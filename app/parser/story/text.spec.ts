@@ -35,6 +35,8 @@ test("text", () => {
     `const name_1 = "纳西妲";`,
     `import story_2 from "./vocal/nahida.wav?url";`,
     `export default function* (ctx) {`,
+    `ctx.preload(story_0, "audio");`,
+    `ctx.preload(story_2, "audio");`,
     `yield deserialize(5, "君にしか見えない\\n讨厌总是注视着");`,
     `yield deserialize(5, "何かを見つめる君が嫌いだ\\n盯着别人看的你");`,
     `yield deserialize(5, "見惚れているかのような恋するような\\n讨厌你那看得入迷一般");`,

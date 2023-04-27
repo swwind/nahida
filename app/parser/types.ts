@@ -66,6 +66,7 @@ export type Context = {
     show: () => void;
     hide: () => void;
   };
+  preload: (url: string, as: string) => void;
 };
 
 export type Story = (ctx: Context) => Generator<Action, void, void>;
