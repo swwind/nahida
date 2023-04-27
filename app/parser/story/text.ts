@@ -1,6 +1,4 @@
 import { Text } from "mdast";
-import { STORY_NAME } from "./heading";
-import { STORY_VOCAL } from "./image";
 import { StoryContext } from "../utils";
 
 export function parseStoryText(ctx: StoryContext, text: Text) {
@@ -10,10 +8,10 @@ export function parseStoryText(ctx: StoryContext, text: Text) {
     return;
   }
 
-  const name = ctx.register.get(STORY_NAME) || "";
-  const vocal = ctx.register.get(STORY_VOCAL) || "";
+  const name = ctx.name || "";
+  const vocal = ctx.vocal || "";
 
   ctx.yield({ type: "text", text: value, name, vocal });
 
-  ctx.register.delete(STORY_VOCAL);
+  ctx.vocal = null;
 }

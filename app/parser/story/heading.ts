@@ -1,11 +1,9 @@
 import { Heading } from "mdast";
 import { StoryContext } from "../utils";
 
-export const STORY_NAME = "name";
-
 export function parseStoryHeading(ctx: StoryContext, heading: Heading) {
   if (!heading.children.length) {
-    ctx.register.delete(STORY_NAME);
+    ctx.name = null;
     return;
   }
 
@@ -23,11 +21,5 @@ export function parseStoryHeading(ctx: StoryContext, heading: Heading) {
 
   const name = text.value.trim();
 
-  if (!name) {
-    ctx.register.delete(STORY_NAME);
-    return;
-  }
-
-  const varname = ctx.importName(name);
-  ctx.register.set(STORY_NAME, varname);
+  ctx.name = ctx.cache(name);
 }

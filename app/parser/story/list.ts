@@ -6,6 +6,7 @@ export function parseStoryList(ctx: StoryContext, list: List) {
   const ordered = list.ordered || false;
 
   if (ordered) {
+    // ordered list -> switch case
     ctx.append(`switch (ctx.selection) {`);
 
     for (let index = 0; index < list.children.length; ++index) {
@@ -19,6 +20,7 @@ export function parseStoryList(ctx: StoryContext, list: List) {
 
     ctx.append(`}`);
   } else {
+    // unordered list -> select
     const options: string[] = [];
 
     for (const item of list.children) {

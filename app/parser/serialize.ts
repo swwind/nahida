@@ -36,10 +36,23 @@ export function serialize(action: Action): [SerializeType, string[]] {
     case "character":
       return [
         SerializeType.CHARACTER,
-        shorten(action.url, action.identity, action.animation),
+        shorten(
+          action.url,
+          action.identity,
+          action.parentAnimation,
+          action.imageAnimation
+        ),
       ];
     case "remove-character":
-      return [SerializeType.REMOVE_CHARACTER, shorten(action.identity)];
+      return [
+        SerializeType.REMOVE_CHARACTER,
+        shorten(
+          action.url,
+          action.identity,
+          action.parentAnimation,
+          action.imageAnimation
+        ),
+      ];
     case "sfx":
       return [SerializeType.SOUND_EFFECT, shorten(action.url)];
     case "text":
@@ -78,12 +91,16 @@ export function deserialize(type: SerializeType, ...action: string[]): Action {
         type: "character",
         url: param(),
         identity: param(),
-        animation: param(),
+        parentAnimation: param(),
+        imageAnimation: param(),
       };
     case SerializeType.REMOVE_CHARACTER:
       return {
         type: "remove-character",
+        url: param(),
         identity: param(),
+        parentAnimation: param(),
+        imageAnimation: param(),
       };
     case SerializeType.SOUND_EFFECT:
       return {

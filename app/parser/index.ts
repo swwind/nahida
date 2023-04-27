@@ -2,7 +2,6 @@ import { remark } from "remark";
 import remarkInlineLinks from "remark-inline-links";
 
 import { parseStoryContents } from "./story/contents";
-import { STORY_VOCAL } from "./story/image";
 import { StoryContext } from "./utils";
 import { serialize } from "./serialize";
 
@@ -18,30 +17,31 @@ function stringify(text: string) {
 export function parseStory(markdown: string) {
   const actions: string[] = [];
   const imports: string[] = [];
-  const importUrlMap: Map<string, string> = new Map();
-  const importNameMap: Map<string, string> = new Map();
+  const importMap: Map<string, string> = new Map();
+  const cacheMap: Map<string, string> = new Map();
 
   const ctx: StoryContext = {
-    register: new Map(),
-    importUrl(url) {
-      if (importUrlMap.has(url)) {
-        return importUrlMap.get(url)!;
+    name: null,
+    vocal: null,
+    import(url) {
+      if (importMap.has(url)) {
+        const name = importMap.get(url)!;
+        return `\0${name}`;
       }
       const name = `story_${imports.length}`;
       imports.push(`import ${name} from "${url}";`);
-      const varname = `\0${name}`;
-      importUrlMap.set(url, varname);
-      return varname;
+      importMap.set(url, name);
+      return `\0${name}`;
     },
-    importName(name) {
-      if (importNameMap.has(name)) {
-        return importNameMap.get(name)!;
+    cache(value) {
+      if (cacheMap.has(value)) {
+        const name = cacheMap.get(value)!;
+        return `\0${name}`;
       }
-      const vname = `name_${imports.length}`;
-      imports.push(`const ${vname} = "${name}";`);
-      const varname = `\0${vname}`;
-      importNameMap.set(name, varname);
-      return varname;
+      const name = `name_${imports.length}`;
+      imports.push(`const ${name} = "${value}";`);
+      cacheMap.set(value, name);
+      return `\0${name}`;
     },
     append(code) {
       actions.push(code);
@@ -61,7 +61,7 @@ export function parseStory(markdown: string) {
 
   parseStoryContents(ctx, ast.children);
 
-  if (ctx.register.has(STORY_VOCAL)) {
+  if (ctx.vocal) {
     throw new Error("Orphan vocal detected");
   }
 
@@ -75,3 +75,4 @@ export function parseStory(markdown: string) {
 }
 
 export * from "./types";
+export { serialize, deserialize } from "./serialize";

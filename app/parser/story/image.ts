@@ -1,14 +1,12 @@
 import { Image } from "mdast";
 import { StoryContext } from "../utils";
 
-export const STORY_VOCAL = "vocal";
-
 export function parseStoryImage(ctx: StoryContext, image: Image) {
   const alt = (image.alt ?? "").split(" ");
   const title = image.title ?? "";
 
   if (alt.includes("bg")) {
-    const url = ctx.importUrl(image.url + "?url");
+    const url = ctx.import(image.url + "?url");
     const deco = alt.filter((x) => x !== "bg").join(" ");
     ctx.yield({
       type: "background",
@@ -20,7 +18,7 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   }
 
   if (alt.includes("fg")) {
-    const url = ctx.importUrl(image.url + "?url");
+    const url = ctx.import(image.url + "?url");
     const deco = alt.filter((x) => x !== "fg").join(" ");
     ctx.yield({
       type: "foreground",
@@ -32,37 +30,53 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   }
 
   if (alt.includes("v")) {
-    const url = ctx.importUrl(image.url + "?url");
-    if (ctx.register.has(STORY_VOCAL)) {
+    const url = ctx.import(image.url + "?url");
+    if (ctx.vocal) {
       throw new Error(
-        "Multiple vocal detected at line " + image.position?.start.line
+        "Multiple vocal track detected at line " + image.position?.start.line
       );
     }
-    ctx.register.set(STORY_VOCAL, url);
+    ctx.vocal = url;
     return;
   }
 
   if (alt.includes("bgm")) {
-    const url = ctx.importUrl(image.url + "?url");
+    const url = ctx.import(image.url + "?url");
     ctx.yield({ type: "bgm", url });
     return;
   }
 
   if (alt.includes("sfx")) {
-    const url = ctx.importUrl(image.url + "?url");
+    const url = ctx.import(image.url + "?url");
     ctx.yield({ type: "sfx", url });
     return;
   }
 
   if (alt.some((v) => v.startsWith("+") || v.startsWith("-"))) {
     const char = alt.find((v) => v.startsWith("+") || v.startsWith("-"))!;
+    const url = ctx.import(image.url + "?url");
     const identity = char.slice(1);
+    const parentAnimation = alt
+      .filter((x) => !x.startsWith("+") && !x.startsWith("-"))
+      .join(" ");
+    const imageAnimation = image.title ?? "";
+
     if (char.startsWith("-")) {
-      ctx.yield({ type: "remove-character", identity });
+      ctx.yield({
+        type: "remove-character",
+        url,
+        identity,
+        parentAnimation,
+        imageAnimation,
+      });
     } else {
-      const url = ctx.importUrl(image.url + "?url");
-      const animation = alt.filter((x) => x !== char).join(" ");
-      ctx.yield({ type: "character", url, identity, animation });
+      ctx.yield({
+        type: "character",
+        url,
+        identity,
+        parentAnimation,
+        imageAnimation,
+      });
     }
     return;
   }

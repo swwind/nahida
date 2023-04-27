@@ -16,12 +16,16 @@ export type CharacterAction = {
   type: "character";
   url: string;
   identity: string;
-  animation: string;
+  parentAnimation: string;
+  imageAnimation: string;
 };
 
 export type RemoveCharacterAction = {
   type: "remove-character";
+  url: string;
   identity: string;
+  parentAnimation: string;
+  imageAnimation: string;
 };
 
 export type TextAction = {
