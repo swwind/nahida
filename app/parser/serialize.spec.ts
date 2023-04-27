@@ -75,8 +75,10 @@ test("serialize", () => {
     }
   }
 
-  run({ type: "sfx", url: "./sfx" });
-  run({ type: "bgm", url: "./bgm" });
+  run({ type: "sfx", url: "./sfx", animation: "" });
+  run({ type: "sfx", url: "./sfx", animation: "fade-in" });
+  run({ type: "bgm", url: "./bgm", animation: "" });
+  run({ type: "bgm", url: "./bgm", animation: "fade-in" });
 
   run({ type: "select", options: ["must have one"] });
   run({ type: "select", options: ["must have one", "maybe two"] });

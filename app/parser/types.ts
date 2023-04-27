@@ -35,19 +35,21 @@ export type TextAction = {
   vocal: string;
 };
 
+export type BackgroundMusicAction = {
+  type: "bgm";
+  url: string;
+  animation: string;
+};
+
 export type SoundEffectAction = {
   type: "sfx";
   url: string;
+  animation: string;
 };
 
 export type SelectAction = {
   type: "select";
   options: string[];
-};
-
-export type BackgroundMusicAction = {
-  type: "bgm";
-  url: string;
 };
 
 export type Action =
@@ -71,6 +73,8 @@ export type Context = {
     play: () => void;
     mute: () => void;
     unmute: () => void;
+    fadeIn: (time?: number) => void;
+    fadeOut: (time?: number) => void;
   };
   preload: (url: string, as: string) => void;
 };

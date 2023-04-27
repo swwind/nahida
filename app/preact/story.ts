@@ -3,14 +3,10 @@ import type { Context, Story } from "../parser";
 import { MutableRef, useEffect, useMemo, useRef } from "preact/hooks";
 import { ReadonlySignal } from "@preact/signals";
 
-import {
-  animateBackground,
-  animateImage,
-  preload,
-  preloadBackground,
-} from "./utils";
+import { animateBackground, preload, preloadBackground } from "./utils";
 import { bgUrl, bgmAudio, name, show, selections } from "./signals";
 import { CallbackStack } from "./callback-stack";
+import { animateAudioFadeIn, animateAudioFadeOut, preloadAudio } from "./audio";
 
 export interface MarkdownStoryController {
   /**
@@ -64,6 +60,10 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
         pause: () => bgmAudio.value?.pause(),
         mute: () => bgmAudio.value && (bgmAudio.value.muted = true),
         unmute: () => bgmAudio.value && (bgmAudio.value.muted = false),
+        fadeIn: (time = 1000) =>
+          bgmAudio.value && animateAudioFadeIn(bgmAudio.value, time),
+        fadeOut: (time = 1000) =>
+          bgmAudio.value && animateAudioFadeOut(bgmAudio.value, time),
       },
       preload,
     };
@@ -156,19 +156,26 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
             break;
           }
           case "bgm": {
-            const audio = new Audio(action.url);
-            audio.loop = true;
-            audio.addEventListener("canplay", () => {
-              bgmAudio.value?.pause();
-              bgmAudio.value = audio;
-              bgmAudio.value.play();
-            });
+            // load new bgm and play
+            const audio = await preloadAudio(action.url);
+            bgmAudio.value?.pause();
+            bgmAudio.value = audio;
+
+            if (!action.animation.includes("noloop")) {
+              audio.loop = true;
+            }
+            if (action.animation.includes("mute")) {
+              audio.muted = true;
+            }
+            audio.play();
 
             break;
           }
           case "sfx": {
-            const audio = new Audio(action.url);
-            audio.addEventListener("canplay", () => audio.play());
+            // play the audio without blocking
+            preloadAudio(action.url).then((audio) => {
+              audio.play();
+            });
             break;
           }
         }

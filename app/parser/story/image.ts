@@ -54,6 +54,21 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
         case "#unmute":
           ctx.append("ctx.bgm.unmute();");
           return;
+        case "#fade-in":
+          if (image.title) {
+            ctx.append(`ctx.bgm.fadeIn(${image.title});`);
+          } else {
+            ctx.append(`ctx.bgm.fadeIn();`);
+          }
+          return;
+        case "#fade-out":
+          if (image.title) {
+            ctx.append(`ctx.bgm.fadeOut(${image.title});`);
+          } else {
+            ctx.append(`ctx.bgm.fadeOut();`);
+          }
+          return;
+
         default:
           throw new ParseError(
             `Unknown BGM operation: \`${image.url}\``,
@@ -63,13 +78,15 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
     }
 
     const url = ctx.import(image.url + "?url", "audio");
-    ctx.yield({ type: "bgm", url });
+    const animation = image.title ?? "";
+    ctx.yield({ type: "bgm", url, animation });
     return;
   }
 
   if (alt.includes("sfx")) {
     const url = ctx.import(image.url + "?url", "audio");
-    ctx.yield({ type: "sfx", url });
+    const animation = image.title ?? "";
+    ctx.yield({ type: "sfx", url, animation });
     return;
   }
 

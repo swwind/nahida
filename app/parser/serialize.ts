@@ -54,7 +54,7 @@ export function serialize(action: Action): [SerializeType, string[]] {
         ),
       ];
     case "sfx":
-      return [SerializeType.SOUND_EFFECT, shorten(action.url)];
+      return [SerializeType.SOUND_EFFECT, shorten(action.url, action.animation)];
     case "text":
       return [
         SerializeType.TEXT,
@@ -63,7 +63,7 @@ export function serialize(action: Action): [SerializeType, string[]] {
     case "select":
       return [SerializeType.SELECT, action.options];
     case "bgm":
-      return [SerializeType.BACKGROUND_MUSIC, shorten(action.url)];
+      return [SerializeType.BACKGROUND_MUSIC, shorten(action.url, action.animation)];
   }
 }
 
@@ -106,6 +106,7 @@ export function deserialize(type: SerializeType, ...action: string[]): Action {
       return {
         type: "sfx",
         url: param(),
+        animation: param(),
       };
     case SerializeType.TEXT:
       return {
@@ -123,6 +124,7 @@ export function deserialize(type: SerializeType, ...action: string[]): Action {
       return {
         type: "bgm",
         url: param(),
+        animation: param(),
       };
   }
 }
