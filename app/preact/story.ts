@@ -176,6 +176,16 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
     }
 
     start();
+
+    return () => {
+      bgmAudio.value?.pause();
+
+      name.value = "";
+      show.value = true;
+      bgmAudio.value = null;
+      bgUrl.value = "";
+      selections.value = null;
+    };
   }, []);
 
   return {
