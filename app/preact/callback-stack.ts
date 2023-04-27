@@ -3,6 +3,7 @@
  */
 export class CallbackStack {
   callbacks: (() => void)[] = [];
+  selection: ((data: number) => void) | null = null;
 
   async waitClick() {
     await new Promise<void>((resolve) => {
@@ -10,6 +11,16 @@ export class CallbackStack {
         this.callbacks.pop();
         resolve();
       });
+    });
+  }
+
+  async waitSelection(fn: (selection: number) => void) {
+    await new Promise<void>((resolve) => {
+      this.selection = (selection) => {
+        this.selection = null;
+        fn(selection);
+        resolve();
+      };
     });
   }
 
@@ -27,8 +38,19 @@ export class CallbackStack {
   }
 
   step() {
+    if (this.selection) {
+      // skip if a selection is wanted
+      return;
+    }
+
     if (this.callbacks.length > 0) {
       this.callbacks[this.callbacks.length - 1]();
+    }
+  }
+
+  select(selection: number) {
+    if (this.selection) {
+      this.selection(selection);
     }
   }
 }

@@ -56,4 +56,12 @@
       }
     }
   }
+
+  .selection {
+    @apply absolute w-full h-2/3 top-0 inset-x-0 py-10vvh;
+
+    .option {
+      @apply cursor-pointer w-1/2 mx-auto text-center my-5vvh text-4vvh text-white bg-black/20 rounded-full hover:bg-black/40 py-1vvh;
+    }
+  }
 }

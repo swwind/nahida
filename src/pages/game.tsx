@@ -15,6 +15,23 @@ export default function () {
         <div class="name">{story.name.value}</div>
         <div class="text" ref={story.refs.text} />
       </div>
+
+      {story.selections.value && (
+        <div class="selection">
+          {story.selections.value.map((option, index) => (
+            <div
+              class="option"
+              key={index}
+              onClick={(e) => {
+                e.stopPropagation();
+                story.select(index);
+              }}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

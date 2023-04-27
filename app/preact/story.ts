@@ -9,7 +9,7 @@ import {
   transformBackgroundClassName,
   transformImageClassName,
 } from "./utils";
-import { bgUrl, bgmAudio, name, show } from "./signals";
+import { bgUrl, bgmAudio, name, show, selections } from "./signals";
 import { CallbackStack } from "./callback-stack";
 
 export interface MarkdownStoryController {
@@ -28,14 +28,22 @@ export interface MarkdownStoryController {
    */
   show: ReadonlySignal<boolean>;
   /**
-   * Currect speaking character name
+   * Current speaking character name
    */
   name: ReadonlySignal<string>;
+  /**
+   * Current selection
+   */
+  selections: ReadonlySignal<string[] | null>;
 
   /**
    * Step function, skip current animation or jump to next
    */
   step: () => void;
+  /**
+   * Make the selection
+   */
+  select: (data: number) => void;
 }
 
 export function useMarkdownStory(story: Story): MarkdownStoryController {
@@ -146,7 +154,11 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
             break;
           }
           case "select": {
-            // TODO
+            selections.value = action.options;
+            await stack.waitSelection((selection) => {
+              ctx.selection = selection;
+            });
+            selections.value = null;
             break;
           }
           case "bgm": {
@@ -177,8 +189,12 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
       background: backgroundRef,
       text: textRef,
     },
+
     show,
     name,
+    selections,
+
     step: () => stack.step(),
+    select: (data) => stack.select(data),
   };
 }
