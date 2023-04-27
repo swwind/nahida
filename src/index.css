@@ -5,6 +5,9 @@
 :root {
   --vvw: min(1vw, 1vh * 16 / 9);
   --vvh: min(1vh, 1vw * 9 / 16);
+
+  font-size: calc(4 * var(--vvh));
+  user-select: none;
 }
 
 @font-face {

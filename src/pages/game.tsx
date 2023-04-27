@@ -47,33 +47,33 @@ export default function (props: Props) {
           menu.value = true;
         }}
       >
-        <PauseIcon class="h-8 w-8 text-white" />
+        <PauseIcon class="h-4 w-4 text-white" />
       </div>
       {menu.value && (
         <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50">
           <div class="w-full h-full">
-            <h1 class="text-white text-4vvw mt-20 text-center">菜单</h1>
-            <div class="flex flex-col gap-4 text-2vvw text-white mx-auto mt-20 w-fit">
+            <h1 class="text-white text-2xl mt-8 text-center">菜单</h1>
+            <div class="flex flex-col gap-4 text-sm text-white mx-auto mt-8 w-fit">
               <button
-                class="py-2 rounded transition-colors px-8 bg-black bg-opacity-0 hover:bg-opacity-30"
+                class="py-1 rounded transition-colors px-4 bg-black bg-opacity-0 hover:bg-opacity-30"
                 onClick={() => (menu.value = false)}
               >
                 继续游戏
               </button>
               <button
-                class="py-2 rounded transition-colors px-8 bg-black bg-opacity-0 hover:bg-opacity-30"
+                class="py-1 rounded transition-colors px-4 bg-black bg-opacity-0 hover:bg-opacity-30"
                 onClick={() => alert("并没有可以读取的存档喵~")}
               >
                 读取存档
               </button>
               <button
-                class="py-2 rounded transition-colors px-8 bg-black bg-opacity-0 hover:bg-opacity-30"
+                class="py-1 rounded transition-colors px-4 bg-black bg-opacity-0 hover:bg-opacity-30"
                 onClick={() => alert("并没有可以设置的东西喵~")}
               >
                 设置
               </button>
               <button
-                class="py-2 rounded transition-colors px-8 bg-black bg-opacity-0 hover:bg-opacity-30"
+                class="py-1 rounded transition-colors px-4 bg-black bg-opacity-0 hover:bg-opacity-30"
                 onClick={() => {
                   props.start.value = false;
                 }}
