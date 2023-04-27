@@ -66,6 +66,12 @@ export type Context = {
     show: () => void;
     hide: () => void;
   };
+  bgm: {
+    pause: () => void;
+    play: () => void;
+    mute: () => void;
+    unmute: () => void;
+  };
   preload: (url: string, as: string) => void;
 };
 

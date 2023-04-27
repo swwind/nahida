@@ -115,7 +115,10 @@ export function transformImageClassName(className: string) {
     .join(" ");
 }
 
-export async function waitAnimationDone(doc: Element) {
-  const animations = doc.getAnimations();
-  await Promise.all(animations.map((anime) => anime.finished));
+export function preload(url: string, as: string) {
+  const link = document.createElement("link");
+  link.rel = "preload";
+  link.href = url;
+  link.as = as;
+  document.head.appendChild(link);
 }

@@ -40,6 +40,28 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   }
 
   if (alt.includes("bgm")) {
+    if (image.url.startsWith("#")) {
+      switch (image.url) {
+        case "#play":
+          ctx.append("ctx.bgm.play();");
+          return;
+        case "#pause":
+          ctx.append("ctx.bgm.pause();");
+          return;
+        case "#mute":
+          ctx.append("ctx.bgm.mute();");
+          return;
+        case "#unmute":
+          ctx.append("ctx.bgm.unmute();");
+          return;
+        default:
+          throw new ParseError(
+            `Unknown BGM operation: \`${image.url}\``,
+            image.position
+          );
+      }
+    }
+
     const url = ctx.import(image.url + "?url", "audio");
     ctx.yield({ type: "bgm", url });
     return;
@@ -49,6 +71,22 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
     const url = ctx.import(image.url + "?url", "audio");
     ctx.yield({ type: "sfx", url });
     return;
+  }
+
+  if (alt.includes("console")) {
+    switch (image.url) {
+      case "#show":
+        ctx.append(`ctx.console.show();`);
+        return;
+      case "#hide":
+        ctx.append(`ctx.console.hide();`);
+        return;
+      default:
+        throw new ParseError(
+          `Unknown console operation: \`${image.url}\``,
+          image.position
+        );
+    }
   }
 
   if (alt.some((v) => v.startsWith("+") || v.startsWith("-"))) {

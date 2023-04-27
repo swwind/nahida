@@ -11,7 +11,7 @@ export default function () {
     <div class="game" onClick={() => story.step()}>
       <div class="background" ref={story.refs.background}></div>
 
-      <div class="console">
+      <div class="console" style={{ opacity: story.show.value ? 1 : 0 }}>
         <div class="name">{story.name.value}</div>
         <div class="text" ref={story.refs.text} />
       </div>
