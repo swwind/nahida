@@ -1,5 +1,6 @@
 import { HTML } from "mdast";
 import { StoryContext } from "../utils";
+import { ParseError } from "../error";
 
 export function parseStoryHtml(ctx: StoryContext, html: HTML) {
   if (html.value.startsWith("<script>") && html.value.endsWith("</script>")) {
@@ -13,5 +14,5 @@ export function parseStoryHtml(ctx: StoryContext, html: HTML) {
     return;
   }
 
-  throw new Error("Unknown html at line " + html.position?.start.line);
+  throw new ParseError("Unknown html", html.position);
 }

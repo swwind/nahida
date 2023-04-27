@@ -62,6 +62,10 @@ export type Action =
 
 export type Context = {
   selection: number;
+  console: {
+    show: () => void;
+    hide: () => void;
+  };
 };
 
 export type Story = (ctx: Context) => Generator<Action, void, void>;

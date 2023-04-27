@@ -20,7 +20,7 @@ test("headings", () => {
       `![v](./vocal/alice.wav)`,
       `我突然明白了什么`,
       ``,
-      `# `,
+      `---`,
       ``,
       `我恍然大悟`,
       ``,
@@ -56,6 +56,12 @@ test("heading panic on link in head", () => {
 test("heading panic on multiple child", () => {
   assert.throws(() => {
     parseStory("# text hello `code`");
+  });
+});
+
+test("throw on empty heading", () => {
+  assert.throws(() => {
+    parseStory("# ");
   });
 });
 

@@ -8,6 +8,8 @@ import { parseStoryText } from "./text";
 import { parseStoryImage } from "./image";
 import { parseStoryLink } from "./link";
 import { parseStoryInlineCode } from "./inlineCode";
+import { parseStoryThematicBreak } from "./thematicBreak";
+import { ParseError } from "../error";
 
 export function parseStoryContents(
   ctx: StoryContext,
@@ -59,6 +61,11 @@ export function parseStoryContents(
       continue;
     }
 
-    throw new Error("Unknown content at line " + child.position?.start.line);
+    if (child.type === "thematicBreak") {
+      parseStoryThematicBreak(ctx, child);
+      continue;
+    }
+
+    throw new ParseError(`Unknown content \`${child.type}\``, child.position);
   }
 }

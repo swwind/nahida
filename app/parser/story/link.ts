@@ -1,5 +1,6 @@
 import { Link } from "mdast";
 import { StoryContext } from "../utils";
+import { ParseError } from "../error";
 
 export function parseStoryLink(ctx: StoryContext, link: Link) {
   if (link.children.length === 1 && link.children[0].type === "text") {
@@ -19,5 +20,5 @@ export function parseStoryLink(ctx: StoryContext, link: Link) {
     }
   }
 
-  throw new Error("Invalid link at line " + link.position?.start.line);
+  throw new ParseError("Invalid link", link.position);
 }

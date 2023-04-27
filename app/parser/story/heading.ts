@@ -1,22 +1,23 @@
 import { Heading } from "mdast";
 import { StoryContext } from "../utils";
+import { ParseError } from "../error";
 
 export function parseStoryHeading(ctx: StoryContext, heading: Heading) {
   if (!heading.children.length) {
-    ctx.name = null;
-    return;
+    throw new ParseError(
+      "Heading should have at least one child",
+      heading.position
+    );
   }
 
   if (heading.children.length > 1) {
-    throw new Error(
-      "Too many children in heading at line " + heading.position?.start.line
-    );
+    throw new ParseError("Too many children in heading", heading.position);
   }
 
   const text = heading.children[0];
 
   if (text.type !== "text") {
-    throw new Error("Unknown heading at line " + heading.position?.start.line);
+    throw new ParseError("Unknown heading element", heading.position);
   }
 
   const name = text.value.trim();

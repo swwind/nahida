@@ -1,5 +1,6 @@
 import { Image } from "mdast";
 import { StoryContext } from "../utils";
+import { ParseError } from "../error";
 
 export function parseStoryImage(ctx: StoryContext, image: Image) {
   const alt = (image.alt ?? "").split(" ");
@@ -32,9 +33,7 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
   if (alt.includes("v")) {
     const url = ctx.import(image.url + "?url");
     if (ctx.vocal) {
-      throw new Error(
-        "Multiple vocal track detected at line " + image.position?.start.line
-      );
+      throw new ParseError("Multiple vocal track detected", image.position);
     }
     ctx.vocal = url;
     return;
@@ -81,5 +80,5 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
     return;
   }
 
-  throw new Error("Unknown image at line " + image.position?.start.line);
+  throw new ParseError("Unknown image", image.position);
 }

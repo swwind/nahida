@@ -1,7 +1,8 @@
 import type { Context, Story } from "../parser";
 
-import { useCallback, useEffect, useRef } from "preact/hooks";
-import { useSignal } from "@preact/signals";
+import { MutableRef, useCallback, useEffect, useRef } from "preact/hooks";
+import { ReadonlySignal, useSignal } from "@preact/signals";
+
 import {
   preloadBackground,
   transformBackgroundClassName,
@@ -9,19 +10,43 @@ import {
   waitAnimationDone,
 } from "./utils";
 
-export function useMarkdownStory(story: Story) {
+export interface MarkdownStoryController {
+  /**
+   * HTML element hooks
+   */
+  refs: {
+    background: MutableRef<HTMLDivElement | null>;
+    text: MutableRef<HTMLDivElement | null>;
+  };
+
+  /**
+   * Whether console is visible or not
+   *
+   * changing this does not block main thread
+   */
+  show: ReadonlySignal<boolean>;
+  /**
+   * Currect speaking character name
+   */
+  name: ReadonlySignal<string>;
+
+  /**
+   * Step function, skip current animation or jump to next
+   */
+  step: () => void;
+}
+
+export function useMarkdownStory(story: Story): MarkdownStoryController {
   const backgroundRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
   const backgroundUrl = useSignal("");
+  const name = useSignal("");
+  const show = useSignal(true);
 
   const bgmAudio = useSignal<HTMLAudioElement | null>(null);
 
-  const name = useSignal("");
-
   const clickResolve = useSignal<(() => void)[]>([]);
-
-  const ctx = useSignal<Context>({ selection: 0 });
 
   const step = useCallback(() => {
     const resolve = clickResolve.value.pop();
@@ -37,8 +62,16 @@ export function useMarkdownStory(story: Story) {
       });
     }
 
+    const ctx: Context = {
+      selection: 0,
+      console: {
+        show: () => (show.value = true),
+        hide: () => (show.value = false),
+      },
+    };
+
     async function start() {
-      const generator = story(ctx.value);
+      const generator = story(ctx);
 
       for (const action of generator) {
         console.log(action);
@@ -145,8 +178,11 @@ export function useMarkdownStory(story: Story) {
   }, []);
 
   return {
-    backgroundRef,
-    textRef,
+    refs: {
+      background: backgroundRef,
+      text: textRef,
+    },
+    show,
     name,
     step,
   };

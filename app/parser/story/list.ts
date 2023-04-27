@@ -1,6 +1,7 @@
 import { List } from "mdast";
 import { StoryContext } from "../utils";
 import { parseStoryContents } from "./contents";
+import { ParseError } from "../error";
 
 export function parseStoryList(ctx: StoryContext, list: List) {
   const ordered = list.ordered || false;
@@ -34,9 +35,7 @@ export function parseStoryList(ctx: StoryContext, list: List) {
         continue;
       }
 
-      throw new Error(
-        "Invalid option in selection list at line " + item.position?.start.line
-      );
+      throw new ParseError("Invalid option in selection list", item.position);
     }
 
     ctx.yield({ type: "select", options: options });
