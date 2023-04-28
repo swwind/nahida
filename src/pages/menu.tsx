@@ -1,12 +1,14 @@
 import { useRouter } from "@/preact";
 
+import "./menu.scss";
+
 export function Menu() {
   const router = useRouter();
 
   return (
     <div class="w-full h-full bg-white">
       <div class="w-full h-full flex flex-col justify-center items-center gap-10 bg-[url(/src/assets/images/background/bg-2.png)] bg-cover bg-center">
-        <h1 class="text-2xl text-white">我与纳西妲的禁断之恋</h1>
+        <h1 class="text-5xl text-white title">我与纳西妲的禁断之恋</h1>
         <div class="flex flex-col gap-4 text-sm text-white">
           <button
             class="bg-black bg-opacity-20 hover:bg-opacity-30 py-2 rounded transition-colors px-4"

@@ -1,0 +1,11 @@
+.title {
+  color: green;
+  animation: blink 2s linear infinite alternate;
+}
+
+@keyframes blink {
+  to {
+    color: lime;
+    transform: scale(1.2);
+  }
+}
