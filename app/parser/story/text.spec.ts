@@ -34,7 +34,7 @@ test("text", () => {
     `import story_0 from "./vocal.wav?url";`,
     `const name_1 = "纳西妲";`,
     `import story_2 from "./vocal/nahida.wav?url";`,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `ctx.preload(story_0, "audio");`,
     `ctx.preload(story_2, "audio");`,
     `yield deserialize(5, "君にしか見えない\\n讨厌总是注视着");`,

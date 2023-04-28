@@ -16,7 +16,7 @@ test("options", () => {
 
   const result = [
     heading,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `yield deserialize(6, "君にしか見えない", "何かを見つめる君が嫌いだ", "見惚れているかのような恋するような", "そんな顔が嫌いだ");`,
     `}`,
   ].join("\n");
@@ -38,7 +38,7 @@ test("branch", () => {
     heading,
     `import story_0 from "./sayonara.md";`,
     `import story_1 from "./byebye.md";`,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `switch (ctx.selection) {`,
     `case 0: {`,
     `yield *story_0(ctx);`,

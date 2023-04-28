@@ -2,12 +2,15 @@
  * Manage all callbacks when user clicks
  */
 export class CallbackStack {
+  animations: Set<Animation> = new Set();
+
   /**
    * click callbacks
    *
    * text waiting, or animation skipping
    */
   callbacks: (() => void)[] = [];
+
   /**
    * selection waiting
    *
@@ -34,22 +37,33 @@ export class CallbackStack {
     });
   }
 
+  async waitAnimation() {
+    const animations = [...this.animations];
+    await Promise.all(animations.map((animation) => animation.finished));
+  }
+
   async waitAnimations(elem: Element) {
     const animations = elem.getAnimations();
 
-    // on skip
-    this.callbacks.push(() => {
-      animations.forEach((animation) => animation.finish());
-    });
-
-    // on finish (or skipped)
-    await Promise.all(animations.map((animation) => animation.finished));
-    this.callbacks.pop();
+    await Promise.all(
+      animations.map(async (animation) => {
+        this.animations.add(animation);
+        await animation.finished;
+        this.animations.delete(animation);
+      })
+    );
   }
 
   step() {
     if (this.selection) {
       // skip if a selection is wanted
+      return;
+    }
+
+    if (this.animations.size > 0) {
+      this.animations.forEach((animation) => {
+        animation.finish();
+      });
       return;
     }
 

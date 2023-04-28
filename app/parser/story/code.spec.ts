@@ -20,7 +20,7 @@ test("html", () => {
 
   const result = [
     heading,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `function add(a, b) {`,
     `  return a + b;`,
     `}`,

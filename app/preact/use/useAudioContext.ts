@@ -4,12 +4,12 @@ import { AudioContext } from "../../parser";
 
 export const AudioContextContext = createContext<AudioContext | null>(null);
 
-export function useAudioController() {
-  const audioController = useContext(AudioContextContext);
+export function useAudioContext() {
+  const audioContext = useContext(AudioContextContext);
 
-  if (!audioController) {
+  if (!audioContext) {
     throw new Error("Please nest your component in <StoryProvider />");
   }
 
-  return audioController;
+  return audioContext;
 }

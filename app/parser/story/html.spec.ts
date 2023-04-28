@@ -19,7 +19,7 @@ test("html", () => {
 
   const result = [
     heading,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `const alice = 0.1 + 0.2;`,
     `yield deserialize(5, "我觉得你说的很对");`,
     `}`,

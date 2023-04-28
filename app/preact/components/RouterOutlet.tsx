@@ -1,5 +1,5 @@
 import { ComponentChildren } from "preact";
-import { useRouter } from "..";
+import { useRouter } from "../use/useRouter";
 
 interface RouterProps {
   children?: ComponentChildren;

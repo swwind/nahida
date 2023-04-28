@@ -29,7 +29,7 @@ test("thematic break", () => {
     heading,
     `const name_0 = "Alice";`,
     `const name_1 = "Bob";`,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `yield deserialize(5, "你说的对", name_0);`,
     `yield deserialize(5, "——爱丽丝如此认为");`,
     `yield deserialize(5, "你说的不对", name_1);`,

@@ -1,4 +1,4 @@
-import { useMarkdownStory, useRouter } from "@/preact";
+import { BackgroundOutlet, useMarkdownStory, useRouter } from "@/preact";
 
 import "./game.scss";
 
@@ -6,6 +6,8 @@ import intro from "../story/intro.md";
 import { useSignal } from "@preact/signals";
 import { PauseIcon } from "~/icons/pause";
 import { useEffect } from "preact/hooks";
+import { TextOutlet } from "@/preact/components/TextOutlet";
+import dendro from "../assets/images/icons/dendro.webp?url";
 
 export function Game() {
   const story = useMarkdownStory();
@@ -14,16 +16,20 @@ export function Game() {
 
   useEffect(() => {
     story.start(intro);
+    return () => story.end();
   }, []);
 
   return (
     <>
       <div class="game" onClick={() => story.step()}>
-        <div class="background" ref={story.refs.background}></div>
+        <BackgroundOutlet />
 
         <div class="console" style={{ opacity: story.show.value ? 1 : 0 }}>
           <div class="name">{story.name.value}</div>
-          <div class="text" ref={story.refs.text} />
+          <div class="text">
+            <TextOutlet />
+            {story.idle.value && <img src={dendro} />}
+          </div>
         </div>
 
         {story.selections.value && (

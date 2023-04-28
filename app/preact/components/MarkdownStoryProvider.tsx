@@ -1,10 +1,10 @@
 import { ComponentChildren } from "preact";
 import { MarkdownStoryContext } from "../use/useMarkdownStory";
-import { useSignal } from "@preact/signals";
+import { batch, useSignal, useSignalEffect } from "@preact/signals";
 import { Story, StoryContext } from "../../parser";
-import { useAudioController } from "../use/useAudioContext";
-import { animateBackground, preload, preloadBackground } from "../utils";
-import { useMemo, useRef } from "preact/hooks";
+import { useAudioContext } from "../use/useAudioContext";
+import { preload } from "../utils";
+import { useMemo } from "preact/hooks";
 import { CallbackStack } from "../callback-stack";
 
 interface MarkdownStoryProviderProps {
@@ -12,19 +12,23 @@ interface MarkdownStoryProviderProps {
 }
 
 export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
-  const audio = useAudioController();
+  const audio = useAudioContext();
 
+  const playing = useSignal(false);
   const showConsole = useSignal(true);
 
-  const backgroundRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-
-  const bgUrl = useSignal<string>("");
+  const backgroundUrl = useSignal("");
+  const backgroundParentAnimation = useSignal("");
+  const backgroundImageAnimation = useSignal("");
 
   const stack = useMemo(() => new CallbackStack(), []);
 
   const name = useSignal("");
+  const text = useSignal("");
   const selections = useSignal<string[] | null>(null);
+
+  const animating = useSignal(false);
+  const idle = useSignal(false);
 
   const start = async (story: Story) => {
     const ctx = {
@@ -38,44 +42,20 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
     } satisfies StoryContext;
 
     const generator = story(ctx);
+    playing.value = true;
 
-    for (const action of generator) {
-      console.log(action);
+    for await (const action of generator) {
+      if (!playing.value) break;
+      console.debug(action);
+
       switch (action.type) {
         case "background": {
-          const parent = backgroundRef.current;
-          if (!parent) {
-            throw new Error("Background element missing");
-          }
-
-          if (bgUrl.value === action.url) {
-            // if background not change, just replay animations
-            const background = parent.firstChild as HTMLDivElement;
-            animateBackground(background, action.parentAnimation);
-
-            // FIXME: should not play animation again
-            // const image = background.firstChild as HTMLImageElement;
-            // animateImage(image, action.imageAnimation);
-
-            await stack.waitAnimations(background);
-          } else {
-            // if background changes, then add a new element
-            const background = await preloadBackground(
-              action.url,
-              action.parentAnimation,
-              action.imageAnimation
-            );
-
-            parent.appendChild(background);
-            bgUrl.value = action.url;
-
-            await stack.waitAnimations(background);
-            // remove old backgrounds when animations done
-            if (parent.firstChild && parent.firstChild !== background) {
-              parent.removeChild(parent.firstChild);
-            }
-          }
-
+          batch(() => {
+            backgroundUrl.value = action.url;
+            backgroundParentAnimation.value = action.parentAnimation;
+            backgroundImageAnimation.value = action.imageAnimation;
+          });
+          await stack.waitAnimation();
           break;
         }
         case "foreground": {
@@ -91,27 +71,19 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
           break;
         }
         case "text": {
-          name.value = action.name;
-
           if (action.vocal) {
-            const vocal = new Audio(action.vocal);
-            vocal.addEventListener("canplay", () => vocal.play());
+            // FIXME
+            audio.sfx.play(action.vocal);
           }
 
-          if (textRef.current) {
-            // remove old text
-            while (textRef.current.firstChild) {
-              textRef.current.removeChild(textRef.current.firstChild);
-            }
-            // add new text
-            const span = document.createElement("span");
-            span.textContent = action.text;
-            span.setAttribute("data-text", action.text);
-            span.style.animationDuration = `${action.text.length * 30}ms`;
-            textRef.current.appendChild(span);
-            await stack.waitAnimations(span);
-          }
+          batch(() => {
+            name.value = action.name;
+            text.value = action.text;
+            idle.value = false;
+          });
 
+          await stack.waitAnimation();
+          idle.value = true;
           await stack.waitClick();
           break;
         }
@@ -143,13 +115,35 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
         }
       }
     }
+
+    playing.value = false;
   };
+
+  useSignalEffect(() => {
+    if (!playing.value) {
+      batch(() => {
+        backgroundUrl.value = "";
+        backgroundParentAnimation.value = "";
+        backgroundImageAnimation.value = "";
+        animating.value = false;
+        idle.value = false;
+        name.value = "";
+        text.value = "";
+        showConsole.value = true;
+      });
+
+      // audio.bgm.fadeOut();
+    }
+  });
 
   return (
     <MarkdownStoryContext.Provider
       value={{
         start,
-        refs: { background: backgroundRef, text: textRef },
+        end() {
+          playing.value = false;
+        },
+        playing,
         show: showConsole,
         name,
         selections,
@@ -158,6 +152,17 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
         },
         select(data) {
           stack.select(data);
+        },
+        animating,
+        idle,
+        text,
+        background: {
+          url: backgroundUrl,
+          parentAnimation: backgroundParentAnimation,
+          imageAnimation: backgroundImageAnimation,
+        },
+        waitAnimation(elem) {
+          return stack.waitAnimations(elem);
         },
       }}
     >

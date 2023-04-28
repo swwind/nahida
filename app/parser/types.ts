@@ -62,30 +62,41 @@ export type Action =
   | SelectAction
   | BackgroundMusicAction;
 
+export interface ConsoleContext {
+  /** show console */
+  show(): void;
+  /** hide console */
+  hide(): void;
+}
+
 export interface AudioContext {
   bgm: {
+    /** change BGM track, this will fade out previous track before change to new one */
     change(url: string): Promise<HTMLAudioElement>;
+    /** instant play track */
     play(): void;
+    /** instant pause track */
     pause(): void;
+    /** instant mute track */
     mute(): void;
+    /** instant unmute track */
     unmute(): void;
+    /** fade in volume */
     fadeIn(time?: number): void;
+    /** fade out volume */
     fadeOut(time?: number): void;
   };
-
   sfx: {
+    /** play sound effect */
     play(url: string): Promise<HTMLAudioElement>;
   };
 }
 
 export type StoryContext = {
   selection: number;
-  console: {
-    show: () => void;
-    hide: () => void;
-  };
+  console: ConsoleContext;
   audio: AudioContext;
   preload: (url: string, as: string) => void;
 };
 
-export type Story = (ctx: StoryContext) => Generator<Action, void, void>;
+export type Story = (ctx: StoryContext) => AsyncGenerator<Action, void, void>;

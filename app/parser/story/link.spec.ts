@@ -20,7 +20,7 @@ test("link", () => {
     `import story_0 from "./sayonara.md";`,
     `import story_1 from "./byebye.md";`,
     `import story_2 from "./badend.md";`,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `yield *story_0(ctx);`,
     `yield *story_1(ctx);`,
     `return;`,

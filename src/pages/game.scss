@@ -57,6 +57,30 @@
           background-position: 0 0, calc(100% + 3rem) 0;
         }
       }
+
+      img {
+        @apply w-4 h-4 align-middle ml-2 inline-block scale-y-125;
+        animation: img-bounce 0.8571428571428571s ease-in-out infinite alternate,
+          fade-in 300ms linear forwards;
+      }
+
+      @keyframes img-bounce {
+        from {
+          @apply translate-y-0 scale-x-125;
+        }
+        to {
+          @apply -translate-y-0.5 -scale-x-125;
+        }
+      }
+
+      @keyframes fade-in {
+        from {
+          @apply opacity-0;
+        }
+        to {
+          @apply opacity-100;
+        }
+      }
     }
   }
 

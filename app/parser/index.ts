@@ -72,7 +72,7 @@ export function parseStory(markdown: string) {
   return [
     `import { deserialize } from "@markdown-story";`,
     ...imports,
-    "export default function* (ctx) {",
+    "export default async function* (ctx) {",
     ...preloads,
     ...actions,
     "}",

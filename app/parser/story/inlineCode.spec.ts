@@ -16,7 +16,7 @@ test("inline code", () => {
 
   const result = [
     heading,
-    `export default function* (ctx) {`,
+    `export default async function* (ctx) {`,
     `const a = 114514;`,
     `const b = 114514;`,
     `const c = a + b;`,
