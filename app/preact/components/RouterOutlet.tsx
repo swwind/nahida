@@ -1,6 +1,6 @@
 import { ComponentChildren } from "preact";
 import { Router, Routes } from "../create/createRouter";
-import { useContext, useMemo, useState } from "preact/hooks";
+import { useContext } from "preact/hooks";
 import { RouterContext } from "../route";
 import { useSignal } from "@preact/signals";
 

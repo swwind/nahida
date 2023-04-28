@@ -28,7 +28,7 @@
   "scripts": {
     "build": "yarn build:tsc && yarn build:vite:esm && yarn build:vite:cjs && yarn build:preact:esm && yarn build:preact:cjs && yarn build:parser:esm && yarn build:parser:cjs && yarn build:example",
     "build:example": "tsc && vite build",
-    "build:tsc": "tsc app/vite/index.ts app/parser/index.ts app/preact/index.ts --outDir lib/types --declaration --emitDeclarationOnly --lib esnext --skipLibCheck --downlevelIteration",
+    "build:tsc": "tsc app/vite/index.ts app/parser/index.ts app/preact/index.ts --outDir lib/types --declaration --emitDeclarationOnly --lib esnext --skipLibCheck --downlevelIteration --jsx react-jsx --jsxImportSource preact",
     "build:vite:esm": "esbuild app/vite/index.ts --bundle --format=esm --platform=node --minify --outfile=lib/vite.mjs --external:rollup-pluginutils --external:remark --external:remark-inline-links",
     "build:vite:cjs": "esbuild app/vite/index.ts --bundle --format=cjs --platform=node --minify --outfile=lib/vite.cjs --external:rollup-pluginutils --external:remark --external:remark-inline-links",
     "build:preact:esm": "esbuild app/preact/index.ts --bundle --format=esm --platform=browser --minify --outfile=lib/preact.mjs --external:preact --external:@preact/signals",
