@@ -1,40 +1,21 @@
 import { ComponentChildren } from "preact";
-import { Router, Routes } from "../create/createRouter";
-import { useContext } from "preact/hooks";
-import { RouterContext } from "../route";
-import { useSignal } from "@preact/signals";
+import { useRouter } from "..";
 
-interface RouterProps<T> {
-  router: Router<T>;
+interface RouterProps {
   children?: ComponentChildren;
 }
 
-export function RouterOutlet<T extends Routes>(props: RouterProps<T>) {
-  const routes = useContext(props.router.routes);
-  const stack = useSignal<ComponentChildren[]>([]);
+export function RouterOutlet(props: RouterProps) {
+  const { stack } = useRouter();
 
   return (
-    <RouterContext.Provider
-      value={{
-        push(route) {
-          console.log(route);
-          if (!(route in routes)) {
-            throw new Error(`Unknown route: ${route}`);
-          }
-          const page = routes[route]();
-          stack.value = [...stack.value, page];
-        },
-        pop() {
-          stack.value = stack.value.slice(0, -1);
-        },
-      }}
-    >
+    <>
       {props.children && <div class="page">{props.children}</div>}
-      {stack.value.map((page, index) => (
+      {stack.value.map(({ component }, index) => (
         <div class="page" key={index}>
-          {page}
+          {component}
         </div>
       ))}
-    </RouterContext.Provider>
+    </>
   );
 }

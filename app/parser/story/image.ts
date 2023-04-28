@@ -43,29 +43,29 @@ export function parseStoryImage(ctx: StoryContext, image: Image) {
     if (image.url.startsWith("#")) {
       switch (image.url) {
         case "#play":
-          ctx.append("ctx.bgm.play();");
+          ctx.append("ctx.audio.bgm.play();");
           return;
         case "#pause":
-          ctx.append("ctx.bgm.pause();");
+          ctx.append("ctx.audio.bgm.pause();");
           return;
         case "#mute":
-          ctx.append("ctx.bgm.mute();");
+          ctx.append("ctx.audio.bgm.mute();");
           return;
         case "#unmute":
-          ctx.append("ctx.bgm.unmute();");
+          ctx.append("ctx.audio.bgm.unmute();");
           return;
         case "#fade-in":
           if (image.title) {
-            ctx.append(`ctx.bgm.fadeIn(${image.title});`);
+            ctx.append(`ctx.audio.bgm.fadeIn(${image.title});`);
           } else {
-            ctx.append(`ctx.bgm.fadeIn();`);
+            ctx.append(`ctx.audio.bgm.fadeIn();`);
           }
           return;
         case "#fade-out":
           if (image.title) {
-            ctx.append(`ctx.bgm.fadeOut(${image.title});`);
+            ctx.append(`ctx.audio.bgm.fadeOut(${image.title});`);
           } else {
-            ctx.append(`ctx.bgm.fadeOut();`);
+            ctx.append(`ctx.audio.bgm.fadeOut();`);
           }
           return;
 

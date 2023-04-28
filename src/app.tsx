@@ -9,8 +9,8 @@ const router = createRouter({
 
 export function App() {
   return (
-    <StoryProvider>
-      <RouterOutlet router={router}>
+    <StoryProvider router={router}>
+      <RouterOutlet>
         <Menu />
       </RouterOutlet>
     </StoryProvider>

@@ -180,4 +180,4 @@
 
 [home]: ../../assets/images/background/home.jpg "cover"
 [tree]: ../../assets/images/background/tree.jpg "cover"
-[sanbing]: ../../assets/images/background/sanbing.jpg "cover"
+[sanbing]: ../../assets/images/background/sanbing.jpg "cover top to-bottom"

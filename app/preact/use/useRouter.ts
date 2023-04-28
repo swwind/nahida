@@ -1,5 +1,15 @@
 import { useContext } from "preact/hooks";
-import { RouterContext } from "../route";
+import { ComponentChildren, createContext } from "preact";
+import { ReadonlySignal } from "@preact/signals";
+
+export interface Router {
+  push(route: string): void;
+  pop(): void;
+
+  stack: ReadonlySignal<{ name: string; component: ComponentChildren }[]>;
+}
+
+export const RouterContext = createContext<Router | null>(null);
 
 export function useRouter() {
   const router = useContext(RouterContext);

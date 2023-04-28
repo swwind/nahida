@@ -5,12 +5,16 @@ import "./game.scss";
 import intro from "../story/intro.md";
 import { useSignal } from "@preact/signals";
 import { PauseIcon } from "~/icons/pause";
+import { useEffect } from "preact/hooks";
 
 export function Game() {
-  const story = useMarkdownStory(intro);
+  const story = useMarkdownStory();
   const menu = useSignal(false);
-
   const router = useRouter();
+
+  useEffect(() => {
+    story.start(intro);
+  }, []);
 
   return (
     <>
