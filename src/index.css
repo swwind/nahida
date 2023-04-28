@@ -24,3 +24,15 @@ body {
 
   font-family: hanyi;
 }
+
+.story {
+  @apply w-full h-full relative;
+}
+
+.page {
+  @apply w-full h-full absolute inset-0;
+}
+
+.page + .page {
+  @apply animate-in fade-in duration-1000;
+}

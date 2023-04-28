@@ -1,5 +1,5 @@
 .game {
-  @apply w-full h-full relative select-none overflow-hidden;
+  @apply w-full h-full relative select-none overflow-hidden bg-black;
 
   .background {
     @apply w-full h-full overflow-hidden relative;

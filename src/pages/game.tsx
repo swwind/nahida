@@ -1,18 +1,16 @@
-import { useMarkdownStory } from "@/preact";
+import { useMarkdownStory, useRouter } from "@/preact";
 
 import "./game.scss";
 
 import intro from "../story/intro.md";
-import { Signal, useSignal } from "@preact/signals";
+import { useSignal } from "@preact/signals";
 import { PauseIcon } from "~/icons/pause";
 
-interface Props {
-  start: Signal<boolean>;
-}
-
-export default function (props: Props) {
+export function Game() {
   const story = useMarkdownStory(intro);
   const menu = useSignal(false);
+
+  const router = useRouter();
 
   return (
     <>
@@ -74,9 +72,7 @@ export default function (props: Props) {
               </button>
               <button
                 class="py-1 rounded transition-colors px-4 bg-black bg-opacity-0 hover:bg-opacity-30"
-                onClick={() => {
-                  props.start.value = false;
-                }}
+                onClick={() => router.pop()}
               >
                 退出
               </button>
