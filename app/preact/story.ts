@@ -139,7 +139,7 @@ export function useMarkdownStory(story: Story): MarkdownStoryController {
               const span = document.createElement("span");
               span.textContent = action.text;
               span.setAttribute("data-text", action.text);
-              span.style.animationDuration = `${action.text.length * 25}ms`;
+              span.style.animationDuration = `${action.text.length * 30}ms`;
               textRef.current.appendChild(span);
               await stack.waitAnimations(span);
             }
