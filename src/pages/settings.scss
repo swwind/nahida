@@ -1,0 +1,15 @@
+.settings {
+  @apply w-full h-full bg-white relative animate-in fade-in;
+
+  .container {
+    @apply w-4/5 h-4/5 absolute inset-0 m-auto border-lime-500 border-dashed border-4 rounded-2xl p-4;
+
+    .title {
+      @apply text-2xl text-lime-500;
+    }
+
+    .button {
+      @apply text-xs bg-lime-500 text-white py-1 px-4 rounded opacity-60 disabled:opacity-100 disabled:pointer-events-none;
+    }
+  }
+}

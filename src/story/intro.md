@@ -1,1 +1,1 @@
-[end](./chapter-1/scene1.md)
+[goto](./chapter-1/scene1.md)

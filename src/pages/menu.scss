@@ -1,13 +1,15 @@
-.title {
-  animation: blink 2s linear infinite alternate;
-}
-
-@keyframes blink {
-  from {
-    color: green;
+.menu {
+  .title {
+    animation: blink 2s linear infinite alternate;
   }
-  to {
-    color: lime;
-    transform: scale(1.2);
+
+  @keyframes blink {
+    from {
+      color: green;
+    }
+    to {
+      color: lime;
+      transform: scale(1.2);
+    }
   }
 }

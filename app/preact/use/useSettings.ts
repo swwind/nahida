@@ -10,6 +10,9 @@ export interface Settings {
 
   /** bgm volume */
   bgmVolume: Signal<number>;
+
+  /** fullscreen */
+  fullscreen: Signal<boolean>;
 }
 
 export const SettingsContext = createContext<Settings | null>(null);

@@ -8,6 +8,7 @@ import { PauseIcon } from "~/icons/pause";
 import { useEffect } from "preact/hooks";
 import { TextOutlet } from "@/preact/components/TextOutlet";
 import dendro from "../assets/images/icons/dendro.webp?url";
+import { Fragment } from "preact/jsx-runtime";
 
 export function Game() {
   const story = useMarkdownStory();
@@ -20,7 +21,7 @@ export function Game() {
   }, []);
 
   return (
-    <>
+    <Fragment>
       <div class="game" onClick={() => story.step()}>
         <BackgroundOutlet />
 
@@ -28,7 +29,7 @@ export function Game() {
           <div class="name">{story.name.value}</div>
           <div class="text">
             <TextOutlet />
-            {story.idle.value && <img src={dendro} />}
+            {story.idle.value && <img src={dendro} class="indicator" />}
           </div>
         </div>
 
@@ -76,7 +77,7 @@ export function Game() {
               </button>
               <button
                 class="py-1 rounded transition-colors px-4 bg-black bg-opacity-0 hover:bg-opacity-30"
-                onClick={() => alert("并没有可以设置的东西喵~")}
+                onClick={() => router.push("settings")}
               >
                 设置
               </button>
@@ -90,6 +91,6 @@ export function Game() {
           </div>
         </div>
       )}
-    </>
+    </Fragment>
   );
 }

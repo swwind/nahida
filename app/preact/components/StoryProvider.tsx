@@ -10,6 +10,13 @@ interface StoryProviderProps<T> {
   children?: ComponentChildren;
 }
 
+/**
+ * ```jsx
+ * <div class="story">
+ *   {props.children}
+ * </div>
+ * ```
+ */
 export function StoryProvider<T extends Routes>(props: StoryProviderProps<T>) {
   return (
     <RouterProvider router={props.router}>
