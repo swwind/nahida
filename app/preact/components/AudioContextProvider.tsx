@@ -28,6 +28,7 @@ export function AudioContextProvider(props: AudioContextProviderProps) {
               loadAudio(url),
             ]).then(([_, audio]) => {
               bgmAudio.value = audio;
+              audio.loop = true;
               audio.play();
               return audio;
             });

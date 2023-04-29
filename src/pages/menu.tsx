@@ -1,12 +1,20 @@
 import { useRouter } from "@/preact";
 
 import "./menu.scss";
+import { useEffect } from "preact/hooks";
+import { useAudioContext } from "@/preact/use/useAudioContext";
+import flower from "../assets/audio/music/flower.mp3?url";
 
 export function Menu() {
   const router = useRouter();
+  const audio = useAudioContext();
+
+  useEffect(() => {
+    audio.bgm.change(flower);
+  }, []);
 
   return (
-    <div class="w-full h-full bg-white">
+    <div class="w-full h-full bg-white menu">
       <div class="w-full h-full flex flex-col justify-center items-center gap-10 bg-[url(/src/assets/images/background/bg-2.png)] bg-cover bg-center">
         <h1 class="text-5xl text-white title">我与纳西妲的禁断之恋</h1>
         <div class="flex flex-col gap-4 text-sm text-white">

@@ -101,6 +101,6 @@ export type StoryContext = {
   preload: (url: string, as: string) => void;
 };
 
-export type Story = (
-  ctx: StoryContext
-) => Generator<SerializedAction, void, void>;
+export type StoryGenerator = Generator<SerializedAction, void, void>;
+
+export type Story = (ctx: StoryContext) => StoryGenerator;

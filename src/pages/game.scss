@@ -39,7 +39,7 @@
       @apply mx-28 relative;
 
       & > span {
-        @apply font-extrabold text-transparent;
+        @apply font-extrabold text-transparent mr-2;
 
         background: linear-gradient(white 0 0),
           linear-gradient(to right, white, transparent);
@@ -59,7 +59,7 @@
       }
 
       .indicator {
-        @apply w-4 h-4 align-middle ml-2 inline-block scale-y-125;
+        @apply w-4 h-4 align-middle inline-block scale-y-125;
         animation: img-bounce 0.8571428571428571s ease-in-out infinite alternate,
           fade-in 300ms linear forwards;
       }

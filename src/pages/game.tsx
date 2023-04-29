@@ -14,21 +14,22 @@ export function Game() {
 
   useEffect(() => {
     story.start(intro);
+    story.click();
     return () => story.end();
   }, []);
 
   return (
-    <div class="game" onClick={() => story.step()}>
+    <div class="game" onClick={() => story.click()}>
       <BackgroundOutlet />
 
       <div
         class="console"
-        style={{ opacity: story.text.visible.value ? 1 : 0 }}
+        style={{ opacity: story.console.visible.value ? 1 : 0 }}
       >
-        <div class="name">{story.text.name.value}</div>
+        <div class="name">{story.console.name.value}</div>
         <div class="text">
           <TextOutlet />
-          {story.text.idle.value && <img src={dendro} class="indicator" />}
+          {story.console.idle.value && <img src={dendro} class="indicator" />}
         </div>
       </div>
 

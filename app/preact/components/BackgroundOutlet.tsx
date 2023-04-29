@@ -32,7 +32,7 @@ export function BackgroundOutlet() {
 
       if (background) {
         const animations = animateBackground(background, parentAnimation);
-        story.waitAnimation(animations);
+        story.addAnimations(animations);
       }
     }
 
@@ -46,7 +46,7 @@ export function BackgroundOutlet() {
 
       div.appendChild(background);
 
-      story.waitAnimation(animations).then(() => {
+      story.addAnimations(animations).then(() => {
         // remove old backgrounds when animations done
         while (div.firstChild && div.firstChild !== background) {
           div.removeChild(div.firstChild);

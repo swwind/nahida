@@ -4,7 +4,7 @@ import { createContext } from "preact";
 import { useContext } from "preact/hooks";
 
 export interface MarkdownStory {
-  start(story: Story | Promise<Story>): void;
+  start(story: Story): void;
   end(): void;
 
   /** game is playing or not */
@@ -20,24 +20,24 @@ export interface MarkdownStory {
   };
 
   /** things related to console */
-  text: {
-    /** current console is visible or not */
-    visible: ReadonlySignal<boolean>;
+  console: {
     /** current speaking character name */
     name: ReadonlySignal<string>;
+    /** current text value */
+    text: ReadonlySignal<string>;
     /** is waiting user to click */
     idle: ReadonlySignal<boolean>;
-    /** current text value */
-    value: ReadonlySignal<string>;
+    /** current console is visible or not */
+    visible: ReadonlySignal<boolean>;
   };
 
   /** step function, skip current animation or jump to next */
-  step(): void;
+  click(): void;
   /** make the selection */
   select(data: number): void;
 
   /** wait animation to be done */
-  waitAnimation(animations: Animation[]): Promise<void>;
+  addAnimations(animations: Animation[]): Promise<void>;
 }
 
 export const MarkdownStoryContext = createContext<MarkdownStory | null>(null);
