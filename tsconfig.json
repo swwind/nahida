@@ -11,7 +11,9 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "outDir": "lib/types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
 
