@@ -4,7 +4,7 @@ import { useSignalEffect } from "@preact/signals";
 
 /**
  * ```jsx
- * <span data-text="xxx">xxx</span>
+ * <span>xxx</span>
  * ```
  */
 export function TextOutlet() {
@@ -12,24 +12,17 @@ export function TextOutlet() {
   const textRef = useRef<HTMLSpanElement>(null);
 
   useSignalEffect(() => {
-    const text = story.text.value;
-    const span = textRef.current;
-
-    if (!span || !text) {
-      return;
-    }
+    const text = story.text.value.value;
+    const span = textRef.current!;
 
     span.style.animation = "none";
     void span.offsetHeight;
+    span.textContent = text;
     span.style.animation = "";
     span.style.animationDuration = `${text.length * 30}ms`;
 
-    story.waitAnimation(span);
+    story.waitAnimation(span.getAnimations());
   });
 
-  return (
-    <span data-text={story.text.value} ref={textRef}>
-      {story.text.value}
-    </span>
-  );
+  return <span ref={textRef} />;
 }

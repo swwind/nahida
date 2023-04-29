@@ -24,33 +24,29 @@ export function BackgroundOutlet() {
     const parentAnimation = story.background.parentAnimation.value;
     const imageAnimation = story.background.imageAnimation.value;
 
-    const div = backgroundRef.current;
-    if (!div) return;
+    const div = backgroundRef.current!;
 
     // if background not change, just replay animations
     if (currentUrl.peek() === url) {
       const background = currentBackground.peek();
 
       if (background) {
-        animateBackground(background, parentAnimation);
-        story.waitAnimation(background);
+        const animations = animateBackground(background, parentAnimation);
+        story.waitAnimation(animations);
       }
     }
 
     // if background changes, then add a new element
     else if (url) {
       const background = document.createElement("div");
-      const image = new Image();
-      image.src = url;
+      background.style.backgroundImage = `url(${url})`;
 
-      background.appendChild(image);
-
-      animateBackground(background, parentAnimation);
-      animateImage(image, imageAnimation);
+      const animations = animateBackground(background, parentAnimation);
+      animateImage(background, imageAnimation);
 
       div.appendChild(background);
 
-      story.waitAnimation(background).then(() => {
+      story.waitAnimation(animations).then(() => {
         // remove old backgrounds when animations done
         while (div.firstChild && div.firstChild !== background) {
           div.removeChild(div.firstChild);

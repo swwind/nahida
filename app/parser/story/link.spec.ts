@@ -2,8 +2,6 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { parseStory } from "..";
 
-const heading = `import { deserialize } from "@markdown-story";`;
-
 test("link", () => {
   const story = parseStory(
     [
@@ -16,11 +14,10 @@ test("link", () => {
   );
 
   const result = [
-    heading,
     `import story_0 from "./sayonara.md";`,
     `import story_1 from "./byebye.md";`,
     `import story_2 from "./badend.md";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `yield *story_0(ctx);`,
     `yield *story_1(ctx);`,
     `return;`,

@@ -1,6 +1,6 @@
 import { Action } from ".";
 
-enum SerializeType {
+export enum ActionType {
   BACKGROUND,
   FOREGROUND,
   CHARACTER,
@@ -11,32 +11,31 @@ enum SerializeType {
   BACKGROUND_MUSIC,
 }
 
+export type SerializedAction = [ActionType, ...string[]];
+
 export function shorten(...params: string[]) {
-  let last = 0;
-  for (let index = 0; index < params.length; ++index) {
-    if (params[index]) {
-      last = index + 1;
-    }
+  while (params.length > 0 && !params[params.length - 1]) {
+    params.pop();
   }
-  return params.slice(0, last);
+  return params;
 }
 
-export function serialize(action: Action): [SerializeType, string[]] {
+export function serialize(action: Action): SerializedAction {
   switch (action.type) {
     case "background":
       return [
-        SerializeType.BACKGROUND,
-        shorten(action.url, action.parentAnimation, action.imageAnimation),
+        ActionType.BACKGROUND,
+        ...shorten(action.url, action.parentAnimation, action.imageAnimation),
       ];
     case "foreground":
       return [
-        SerializeType.FOREGROUND,
-        shorten(action.url, action.parentAnimation, action.imageAnimation),
+        ActionType.FOREGROUND,
+        ...shorten(action.url, action.parentAnimation, action.imageAnimation),
       ];
     case "character":
       return [
-        SerializeType.CHARACTER,
-        shorten(
+        ActionType.CHARACTER,
+        ...shorten(
           action.url,
           action.identity,
           action.parentAnimation,
@@ -45,8 +44,8 @@ export function serialize(action: Action): [SerializeType, string[]] {
       ];
     case "remove-character":
       return [
-        SerializeType.REMOVE_CHARACTER,
-        shorten(
+        ActionType.REMOVE_CHARACTER,
+        ...shorten(
           action.url,
           action.identity,
           action.parentAnimation,
@@ -54,39 +53,45 @@ export function serialize(action: Action): [SerializeType, string[]] {
         ),
       ];
     case "sfx":
-      return [SerializeType.SOUND_EFFECT, shorten(action.url, action.animation)];
+      return [
+        ActionType.SOUND_EFFECT,
+        ...shorten(action.url, action.animation),
+      ];
     case "text":
       return [
-        SerializeType.TEXT,
-        shorten(action.text, action.name, action.vocal),
+        ActionType.TEXT,
+        ...shorten(action.text, action.name, action.vocal),
       ];
     case "select":
-      return [SerializeType.SELECT, action.options];
+      return [ActionType.SELECT, ...action.options];
     case "bgm":
-      return [SerializeType.BACKGROUND_MUSIC, shorten(action.url, action.animation)];
+      return [
+        ActionType.BACKGROUND_MUSIC,
+        ...shorten(action.url, action.animation),
+      ];
   }
 }
 
-export function deserialize(type: SerializeType, ...action: string[]): Action {
+export function deserialize(type: ActionType, ...action: string[]): Action {
   let index = 0;
   const param = () => action[index++] || "";
 
   switch (type) {
-    case SerializeType.BACKGROUND:
+    case ActionType.BACKGROUND:
       return {
         type: "background",
         url: param(),
         parentAnimation: param(),
         imageAnimation: param(),
       };
-    case SerializeType.FOREGROUND:
+    case ActionType.FOREGROUND:
       return {
         type: "foreground",
         url: param(),
         parentAnimation: param(),
         imageAnimation: param(),
       };
-    case SerializeType.CHARACTER:
+    case ActionType.CHARACTER:
       return {
         type: "character",
         url: param(),
@@ -94,7 +99,7 @@ export function deserialize(type: SerializeType, ...action: string[]): Action {
         parentAnimation: param(),
         imageAnimation: param(),
       };
-    case SerializeType.REMOVE_CHARACTER:
+    case ActionType.REMOVE_CHARACTER:
       return {
         type: "remove-character",
         url: param(),
@@ -102,25 +107,25 @@ export function deserialize(type: SerializeType, ...action: string[]): Action {
         parentAnimation: param(),
         imageAnimation: param(),
       };
-    case SerializeType.SOUND_EFFECT:
+    case ActionType.SOUND_EFFECT:
       return {
         type: "sfx",
         url: param(),
         animation: param(),
       };
-    case SerializeType.TEXT:
+    case ActionType.TEXT:
       return {
         type: "text",
         text: param(),
         name: param(),
         vocal: param(),
       };
-    case SerializeType.SELECT:
+    case ActionType.SELECT:
       return {
         type: "select",
         options: action,
       };
-    case SerializeType.BACKGROUND_MUSIC:
+    case ActionType.BACKGROUND_MUSIC:
       return {
         type: "bgm",
         url: param(),

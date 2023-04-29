@@ -1,7 +1,7 @@
 import { ComponentChildren } from "preact";
 import { MarkdownStoryContext } from "../use/useMarkdownStory";
-import { batch, useSignal, useSignalEffect } from "@preact/signals";
-import { Story, StoryContext } from "../../parser";
+import { batch, useSignal } from "@preact/signals";
+import { Story, StoryContext, deserialize } from "../../parser";
 import { useAudioContext } from "../use/useAudioContext";
 import { preload } from "../utils";
 import { useMemo } from "preact/hooks";
@@ -15,7 +15,7 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
   const audio = useAudioContext();
 
   const playing = useSignal(false);
-  const showConsole = useSignal(true);
+  const selections = useSignal<string[] | null>(null);
 
   const backgroundUrl = useSignal("");
   const backgroundParentAnimation = useSignal("");
@@ -23,19 +23,19 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
 
   const stack = useMemo(() => new CallbackStack(), []);
 
-  const name = useSignal("");
-  const text = useSignal("");
-  const selections = useSignal<string[] | null>(null);
-
-  const animating = useSignal(false);
+  const textName = useSignal("");
+  const textValue = useSignal("");
   const idle = useSignal(false);
+  const consoleVisible = useSignal(true);
 
-  const start = async (story: Story) => {
+  const start = async (story: Story | Promise<Story>) => {
+    story = await story;
+
     const ctx = {
       selection: 0,
       console: {
-        show: () => (showConsole.value = true),
-        hide: () => (showConsole.value = false),
+        show: () => (consoleVisible.value = true),
+        hide: () => (consoleVisible.value = false),
       },
       audio,
       preload,
@@ -44,8 +44,8 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
     const generator = story(ctx);
     playing.value = true;
 
-    for await (const action of generator) {
-      if (!playing.value) break;
+    for (const serial of generator) {
+      const action = deserialize(...serial);
       console.debug(action);
 
       switch (action.type) {
@@ -77,14 +77,13 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
           }
 
           batch(() => {
-            name.value = action.name;
-            text.value = action.text;
-            idle.value = false;
+            textName.value = action.name;
+            textValue.value = action.text;
           });
-
           await stack.waitAnimation();
           idle.value = true;
           await stack.waitClick();
+          idle.value = false;
           break;
         }
         case "select": {
@@ -114,55 +113,54 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
           break;
         }
       }
+
+      if (!playing.value) break;
     }
 
-    playing.value = false;
+    end();
   };
 
-  useSignalEffect(() => {
-    if (!playing.value) {
-      batch(() => {
-        backgroundUrl.value = "";
-        backgroundParentAnimation.value = "";
-        backgroundImageAnimation.value = "";
-        animating.value = false;
-        idle.value = false;
-        name.value = "";
-        text.value = "";
-        showConsole.value = true;
-      });
-
-      // audio.bgm.fadeOut();
-    }
-  });
+  const end = () => {
+    batch(() => {
+      playing.value = false;
+      // reset backgrounds
+      backgroundUrl.value = "";
+      backgroundParentAnimation.value = "";
+      backgroundImageAnimation.value = "";
+      // reset text
+      textName.value = "";
+      textValue.value = "";
+      idle.value = false;
+      consoleVisible.value = true;
+    });
+  };
 
   return (
     <MarkdownStoryContext.Provider
       value={{
         start,
-        end() {
-          playing.value = false;
-        },
+        end,
         playing,
-        show: showConsole,
-        name,
         selections,
+        text: {
+          name: textName,
+          value: textValue,
+          idle: idle,
+          visible: consoleVisible,
+        },
+        background: {
+          url: backgroundUrl,
+          parentAnimation: backgroundParentAnimation,
+          imageAnimation: backgroundImageAnimation,
+        },
         step() {
           stack.step();
         },
         select(data) {
           stack.select(data);
         },
-        animating,
-        idle,
-        text,
-        background: {
-          url: backgroundUrl,
-          parentAnimation: backgroundParentAnimation,
-          imageAnimation: backgroundImageAnimation,
-        },
-        waitAnimation(elem) {
-          return stack.waitAnimations(elem);
+        waitAnimation(animations) {
+          return stack.waitAnimations(animations);
         },
       }}
     >

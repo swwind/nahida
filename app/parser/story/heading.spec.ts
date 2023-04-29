@@ -2,8 +2,6 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { parseStory } from "..";
 
-const heading = `import { deserialize } from "@markdown-story";`;
-
 test("headings", () => {
   const story = parseStory(
     [
@@ -30,19 +28,18 @@ test("headings", () => {
   );
 
   const result = [
-    heading,
     `const name_0 = "Alice";`,
     `const name_1 = "Bob";`,
     `import story_2 from "./vocal/alice.wav?url";`,
     `import story_3 from "./vocal/alice2.wav?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_2, "audio");`,
     `ctx.preload(story_3, "audio");`,
-    `yield deserialize(5, "你说的对", name_0);`,
-    `yield deserialize(5, "你说的不对", name_1);`,
-    `yield deserialize(5, "我突然明白了什么", name_0, story_2);`,
-    `yield deserialize(5, "我恍然大悟");`,
-    `yield deserialize(5, "我好像明白了什么", "", story_3);`,
+    `yield [5, "你说的对", name_0];`,
+    `yield [5, "你说的不对", name_1];`,
+    `yield [5, "我突然明白了什么", name_0, story_2];`,
+    `yield [5, "我恍然大悟"];`,
+    `yield [5, "我好像明白了什么", "", story_3];`,
     `}`,
   ].join("\n");
 

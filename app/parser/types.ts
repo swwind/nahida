@@ -1,3 +1,5 @@
+import { SerializedAction } from "./serialize";
+
 export type BackgroundAction = {
   type: "background";
   url: string;
@@ -99,4 +101,6 @@ export type StoryContext = {
   preload: (url: string, as: string) => void;
 };
 
-export type Story = (ctx: StoryContext) => AsyncGenerator<Action, void, void>;
+export type Story = (
+  ctx: StoryContext
+) => Generator<SerializedAction, void, void>;

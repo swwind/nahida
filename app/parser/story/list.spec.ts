@@ -2,8 +2,6 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { parseStory } from "..";
 
-const heading = `import { deserialize } from "@markdown-story";`;
-
 test("options", () => {
   const story = parseStory(
     [
@@ -15,9 +13,8 @@ test("options", () => {
   );
 
   const result = [
-    heading,
-    `export default async function* (ctx) {`,
-    `yield deserialize(6, "君にしか見えない", "何かを見つめる君が嫌いだ", "見惚れているかのような恋するような", "そんな顔が嫌いだ");`,
+    `export default function* (ctx) {`,
+    `yield [6, "君にしか見えない", "何かを見つめる君が嫌いだ", "見惚れているかのような恋するような", "そんな顔が嫌いだ"];`,
     `}`,
   ].join("\n");
 
@@ -35,10 +32,9 @@ test("branch", () => {
   );
 
   const result = [
-    heading,
     `import story_0 from "./sayonara.md";`,
     `import story_1 from "./byebye.md";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `switch (ctx.selection) {`,
     `case 0: {`,
     `yield *story_0(ctx);`,
@@ -53,7 +49,7 @@ test("branch", () => {
     `break;`,
     `}`,
     `case 3: {`,
-    `yield deserialize(5, "你说的对，但是原神是一款由米哈游自主研发的");`,
+    `yield [5, "你说的对，但是原神是一款由米哈游自主研发的"];`,
     `break;`,
     `}`,
     `}`,

@@ -2,8 +2,6 @@ import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { parseStory } from "..";
 
-const heading = `import { deserialize } from "@markdown-story";`;
-
 test("background", () => {
   const story = parseStory(
     [
@@ -19,16 +17,15 @@ test("background", () => {
   );
 
   const result = [
-    heading,
     `const name_0 = "Alice";`,
     `import story_1 from "./background.png?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_1, "image");`,
-    `yield deserialize(0, story_1, "fade-in", "cover left to-right");`,
-    `yield deserialize(0, story_1, "fade-in");`,
-    `yield deserialize(0, story_1, "", "cover left to-right");`,
-    `yield deserialize(0, story_1);`,
-    `yield deserialize(5, "你们啊，还是太年轻了", name_0);`,
+    `yield [0, story_1, "fade-in", "cover left to-right"];`,
+    `yield [0, story_1, "fade-in"];`,
+    `yield [0, story_1, "", "cover left to-right"];`,
+    `yield [0, story_1];`,
+    `yield [5, "你们啊，还是太年轻了", name_0];`,
     `}`,
   ].join("\n");
 
@@ -50,14 +47,13 @@ test("background with references", () => {
   );
 
   const result = [
-    heading,
     `const name_0 = "Alice";`,
     `import story_1 from "./background.png?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_1, "image");`,
-    `yield deserialize(0, story_1, "fade-in", "cover top to-bottom");`,
-    `yield deserialize(0, story_1, "", "cover top to-bottom");`,
-    `yield deserialize(5, "你们啊，还是太年轻了", name_0);`,
+    `yield [0, story_1, "fade-in", "cover top to-bottom"];`,
+    `yield [0, story_1, "", "cover top to-bottom"];`,
+    `yield [5, "你们啊，还是太年轻了", name_0];`,
     `}`,
   ].join("\n");
 
@@ -79,16 +75,15 @@ test("foreground", () => {
   );
 
   const result = [
-    heading,
     `const name_0 = "Alice";`,
     `import story_1 from "./foreground.png?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_1, "image");`,
-    `yield deserialize(1, story_1, "fade-in", "cover left to-right");`,
-    `yield deserialize(1, story_1, "fade-in");`,
-    `yield deserialize(1, story_1, "", "cover top to-bottom");`,
-    `yield deserialize(1, story_1);`,
-    `yield deserialize(5, "你们啊，还是太年轻了", name_0);`,
+    `yield [1, story_1, "fade-in", "cover left to-right"];`,
+    `yield [1, story_1, "fade-in"];`,
+    `yield [1, story_1, "", "cover top to-bottom"];`,
+    `yield [1, story_1];`,
+    `yield [5, "你们啊，还是太年轻了", name_0];`,
     `}`,
   ].join("\n");
 
@@ -110,14 +105,13 @@ test("foreground with references", () => {
   );
 
   const result = [
-    heading,
     `const name_0 = "Alice";`,
     `import story_1 from "./foreground.png?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_1, "image");`,
-    `yield deserialize(1, story_1, "fade-in", "cover top to-bottom");`,
-    `yield deserialize(1, story_1, "", "cover top to-bottom");`,
-    `yield deserialize(5, "你们啊，还是太年轻了", name_0);`,
+    `yield [1, story_1, "fade-in", "cover top to-bottom"];`,
+    `yield [1, story_1, "", "cover top to-bottom"];`,
+    `yield [5, "你们啊，还是太年轻了", name_0];`,
     `}`,
   ].join("\n");
 
@@ -140,23 +134,22 @@ test("bgm", () => {
   );
 
   const result = [
-    heading,
     `import story_0 from "./background-music-1.wav?url";`,
     `import story_1 from "./background-music-2.wav?url";`,
     `import story_2 from "./background-music-3.wav?url";`,
     `import story_3 from "./background-music-4.wav?url";`,
     `import story_4 from "./background-music-5.wav?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_0, "audio");`,
     `ctx.preload(story_1, "audio");`,
     `ctx.preload(story_2, "audio");`,
     `ctx.preload(story_3, "audio");`,
     `ctx.preload(story_4, "audio");`,
-    `yield deserialize(7, story_0);`,
-    `yield deserialize(7, story_1);`,
-    `yield deserialize(7, story_2);`,
-    `yield deserialize(7, story_3);`,
-    `yield deserialize(7, story_4);`,
+    `yield [7, story_0];`,
+    `yield [7, story_1];`,
+    `yield [7, story_2];`,
+    `yield [7, story_3];`,
+    `yield [7, story_4];`,
     `}`,
   ].join("\n");
 
@@ -179,23 +172,22 @@ test("sfx", () => {
   );
 
   const result = [
-    heading,
     `import story_0 from "./sound-effect-1.wav?url";`,
     `import story_1 from "./sound-effect-2.wav?url";`,
     `import story_2 from "./sound-effect-3.wav?url";`,
     `import story_3 from "./sound-effect-4.wav?url";`,
     `import story_4 from "./sound-effect-5.wav?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_0, "audio");`,
     `ctx.preload(story_1, "audio");`,
     `ctx.preload(story_2, "audio");`,
     `ctx.preload(story_3, "audio");`,
     `ctx.preload(story_4, "audio");`,
-    `yield deserialize(4, story_0);`,
-    `yield deserialize(4, story_1);`,
-    `yield deserialize(4, story_2);`,
-    `yield deserialize(4, story_3);`,
-    `yield deserialize(4, story_4);`,
+    `yield [4, story_0];`,
+    `yield [4, story_1];`,
+    `yield [4, story_2];`,
+    `yield [4, story_3];`,
+    `yield [4, story_4];`,
     `}`,
   ].join("\n");
 
@@ -216,16 +208,15 @@ test("character", () => {
   );
 
   const result = [
-    heading,
     `import story_0 from "./figure/alice.png?url";`,
     `import story_1 from "./figure/bob.png?url";`,
-    `export default async function* (ctx) {`,
+    `export default function* (ctx) {`,
     `ctx.preload(story_0, "image");`,
     `ctx.preload(story_1, "image");`,
-    `yield deserialize(2, story_0, "alice", "top-20", "w-32");`,
-    `yield deserialize(2, story_0, "alice", "top-30");`,
-    `yield deserialize(2, story_1, "bob", "top-30", "w-40");`,
-    `yield deserialize(3, story_1, "bob", "top-30 fade-out", "w-40");`,
+    `yield [2, story_0, "alice", "top-20", "w-32"];`,
+    `yield [2, story_0, "alice", "top-30"];`,
+    `yield [2, story_1, "bob", "top-30", "w-40"];`,
+    `yield [3, story_1, "bob", "top-30 fade-out", "w-40"];`,
     `}`,
   ].join("\n");
 

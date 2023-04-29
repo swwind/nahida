@@ -7,7 +7,7 @@ export class CallbackStack {
   /**
    * click callbacks
    *
-   * text waiting, or animation skipping
+   * text waiting
    */
   callbacks: (() => void)[] = [];
 
@@ -42,9 +42,7 @@ export class CallbackStack {
     await Promise.all(animations.map((animation) => animation.finished));
   }
 
-  async waitAnimations(elem: Element) {
-    const animations = elem.getAnimations();
-
+  async waitAnimations(animations: Animation[]) {
     await Promise.all(
       animations.map(async (animation) => {
         this.animations.add(animation);
@@ -61,6 +59,7 @@ export class CallbackStack {
     }
 
     if (this.animations.size > 0) {
+      // finish all unfinished animations
       this.animations.forEach((animation) => {
         animation.finish();
       });
@@ -68,6 +67,7 @@ export class CallbackStack {
     }
 
     if (this.callbacks.length > 0) {
+      // handle callback
       this.callbacks[this.callbacks.length - 1]();
     }
   }

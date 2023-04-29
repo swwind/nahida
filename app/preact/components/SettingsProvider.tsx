@@ -14,7 +14,6 @@ export function SettingsProvider(props: SettingsProviderProps) {
   const fullscreen = useSignal(false);
 
   useSignalEffect(() => {
-    console.log(fullscreen.value);
     if (fullscreen.value) {
       !document.fullscreenElement && document.body.requestFullscreen();
     } else {

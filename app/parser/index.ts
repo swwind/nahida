@@ -51,11 +51,9 @@ export function parseStory(markdown: string) {
       actions.push(code);
     },
     yield(action) {
-      const [type, params] = serialize(action);
+      const [type, ...params] = serialize(action);
       actions.push(
-        `yield deserialize(${type}${params
-          .map((x) => `, ${stringify(x)}`)
-          .join("")});`
+        `yield [${type}${params.map((x) => `, ${stringify(x)}`).join("")}];`
       );
     },
   };
@@ -70,9 +68,8 @@ export function parseStory(markdown: string) {
   }
 
   return [
-    `import { deserialize } from "@markdown-story";`,
     ...imports,
-    "export default async function* (ctx) {",
+    "export default function* (ctx) {",
     ...preloads,
     ...actions,
     "}",
