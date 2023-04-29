@@ -1,9 +1,9 @@
 import { List } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 import { parseStoryContents } from "./contents";
 import { ParseError } from "../error";
 
-export function parseStoryList(ctx: StoryContext, list: List) {
+export function parseStoryList(ctx: ParseContext, list: List) {
   const ordered = list.ordered || false;
 
   if (ordered) {

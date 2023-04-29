@@ -2,7 +2,7 @@ import { Action } from "./types";
 
 export type ImportType = "image" | "audio";
 
-export interface StoryContext {
+export interface ParseContext {
   name: `\0${string}` | null;
   vocal: `\0${string}` | null;
 

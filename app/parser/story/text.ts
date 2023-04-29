@@ -1,7 +1,7 @@
 import { Text } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 
-export function parseStoryText(ctx: StoryContext, text: Text) {
+export function parseStoryText(ctx: ParseContext, text: Text) {
   const value = text.value.trim();
 
   if (!value) {

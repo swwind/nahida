@@ -1,8 +1,8 @@
 import { ThematicBreak } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 
 export function parseStoryThematicBreak(
-  ctx: StoryContext,
+  ctx: ParseContext,
   _child: ThematicBreak
 ) {
   ctx.name = null;

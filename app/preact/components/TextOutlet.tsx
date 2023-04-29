@@ -15,7 +15,7 @@ export function TextOutlet() {
     const text = story.text.value;
     const span = textRef.current;
 
-    if (!span) {
+    if (!span || !text) {
       return;
     }
 

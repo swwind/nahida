@@ -1,8 +1,8 @@
 import { HTML } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 import { ParseError } from "../error";
 
-export function parseStoryHtml(ctx: StoryContext, html: HTML) {
+export function parseStoryHtml(ctx: ParseContext, html: HTML) {
   if (html.value.startsWith("<script>") && html.value.endsWith("</script>")) {
     const code = html.value.slice(8, -9).trim();
     ctx.append(code);

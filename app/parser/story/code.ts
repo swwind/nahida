@@ -1,6 +1,6 @@
 import { Code } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 
-export function parseStoryCode(ctx: StoryContext, code: Code) {
+export function parseStoryCode(ctx: ParseContext, code: Code) {
   ctx.append(code.value.trim());
 }

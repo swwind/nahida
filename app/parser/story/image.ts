@@ -1,8 +1,8 @@
 import { Image } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 import { ParseError } from "../error";
 
-export function parseStoryImage(ctx: StoryContext, image: Image) {
+export function parseStoryImage(ctx: ParseContext, image: Image) {
   const alt = (image.alt ?? "").split(" ");
   const title = image.title ?? "";
 

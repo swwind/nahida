@@ -1,8 +1,8 @@
 import { Link } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 import { ParseError } from "../error";
 
-export function parseStoryLink(ctx: StoryContext, link: Link) {
+export function parseStoryLink(ctx: ParseContext, link: Link) {
   if (link.children.length === 1 && link.children[0].type === "text") {
     const attr = link.children[0].value.split(" ");
 

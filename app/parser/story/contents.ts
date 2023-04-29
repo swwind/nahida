@@ -1,5 +1,5 @@
 import { BlockContent, Content, DefinitionContent } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 import { parseStoryHeading } from "./heading";
 import { parseStoryHtml } from "./html";
 import { parseStoryCode } from "./code";
@@ -12,7 +12,7 @@ import { parseStoryThematicBreak } from "./thematicBreak";
 import { ParseError } from "../error";
 
 export function parseStoryContents(
-  ctx: StoryContext,
+  ctx: ParseContext,
   contents: (BlockContent | Content | DefinitionContent)[]
 ) {
   for (const child of contents) {

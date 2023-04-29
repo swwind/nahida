@@ -1,8 +1,8 @@
 import { InlineCode } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 
 export function parseStoryInlineCode(
-  ctx: StoryContext,
+  ctx: ParseContext,
   inlineCode: InlineCode
 ) {
   ctx.append(inlineCode.value.trim());

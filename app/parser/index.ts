@@ -2,7 +2,7 @@ import { remark } from "remark";
 import remarkInlineLinks from "remark-inline-links";
 
 import { parseStoryContents } from "./story/contents";
-import { StoryContext } from "./utils";
+import { ParseContext } from "./utils";
 import { serialize } from "./serialize";
 
 function stringify(text: string) {
@@ -21,7 +21,7 @@ export function parseStory(markdown: string) {
   const importMap: Map<string, string> = new Map();
   const cacheMap: Map<string, string> = new Map();
 
-  const ctx: StoryContext = {
+  const ctx: ParseContext = {
     name: null,
     vocal: null,
     import(url, type) {

@@ -1,8 +1,8 @@
 import { Heading } from "mdast";
-import { StoryContext } from "../utils";
+import { ParseContext } from "../utils";
 import { ParseError } from "../error";
 
-export function parseStoryHeading(ctx: StoryContext, heading: Heading) {
+export function parseStoryHeading(ctx: ParseContext, heading: Heading) {
   if (!heading.children.length) {
     throw new ParseError(
       "Heading should have at least one child",
