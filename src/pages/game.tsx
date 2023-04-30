@@ -48,7 +48,7 @@ export function Game() {
         </div>
       )}
       <div
-        class="absolute top-4 left-4 rounded-lg p-2 bg-black bg-opacity-0 transition-colors hover:bg-opacity-20"
+        class="absolute left-4 top-4 rounded-lg bg-black bg-opacity-0 p-2 transition-colors hover:bg-opacity-20"
         onClick={(e) => {
           e.stopPropagation();
           router.push("settings");

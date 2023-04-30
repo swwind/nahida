@@ -1,15 +1,15 @@
 .settings {
-  @apply w-full h-full bg-transparent relative animate-in fade-in;
+  @apply relative h-full w-full bg-transparent animate-in fade-in;
 
   .container {
-    @apply w-4/5 h-4/5 absolute inset-0 m-auto border-lime-500 border-dashed border-4 rounded-2xl p-4 bg-white bg-clip-padding;
+    @apply absolute inset-0 m-auto h-4/5 w-4/5 rounded-2xl border-4 border-dashed border-lime-500 bg-white bg-clip-padding p-4;
 
     .title {
       @apply text-2xl text-lime-500;
     }
 
     .button {
-      @apply text-[0.5rem] text-lime-700 bg-white px-4 rounded disabled:text-white disabled:bg-lime-500 disabled:pointer-events-none;
+      @apply rounded bg-white px-4 text-[0.5rem] text-lime-700 disabled:pointer-events-none disabled:bg-lime-500 disabled:text-white;
     }
   }
 }
