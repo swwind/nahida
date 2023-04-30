@@ -32,7 +32,7 @@ export function Menu() {
           </button>
           <button
             class="bg-black bg-opacity-20 hover:bg-opacity-30 py-2 rounded transition-colors px-4"
-            onClick={() => alert("并没有可以设置的东西喵~")}
+            onClick={() => router.push("settings")}
           >
             设置
           </button>

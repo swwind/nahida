@@ -32,7 +32,8 @@
 这时，纳西妲突然伸出手来，轻轻地拍了拍我的头。
 
 ![console](#hide)
-![bg fade-in][bg-2]
+![bg conic-out duration-1500][bg-1]
+![bg conic-in duration-1500][bg-2]
 ![console](#show)
 
 # 纳西妲

@@ -1,33 +1,47 @@
+export interface SimpleAnimation {
+  finish(): void;
+  finished: Promise<void>;
+}
+
+export type StoryAnimation = Animation | SimpleAnimation;
+
+/**
+ * Plays an animation which is skippable
+ *
+ * starts with callback(0), and ends with callback(1)
+ */
 export function animate(
-  fn: (t: number) => void,
-  start: number,
-  end: number,
+  callback: (t: number) => void,
   duration: number
-) {
-  fn(start);
+): SimpleAnimation {
+  let skipped = false;
+  callback(0);
 
-  return new Promise<void>((resolve) => {
+  const finished = new Promise<void>((resolve) => {
     const startTime = Date.now();
-
-    function finish() {
-      fn(end);
-      resolve();
-    }
 
     function frame() {
       const now = Date.now();
 
-      if (now >= startTime + duration) {
-        finish();
+      if (skipped || now >= startTime + duration) {
+        callback(1);
+        resolve();
         return;
       }
 
       requestAnimationFrame(frame);
-
-      const progress = (now - startTime) / duration;
-      fn(progress * (end - start) + start);
+      callback((now - startTime) / duration);
     }
 
     frame();
   });
+
+  function finish() {
+    skipped = true;
+  }
+
+  return {
+    finish,
+    finished,
+  };
 }

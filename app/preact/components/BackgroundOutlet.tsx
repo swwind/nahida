@@ -7,8 +7,8 @@ import { animateImage } from "../utils";
 /**
  * ```jsx
  * <div class="background">
- *   <div><img src="/bg1" /></div>
- *   <div><img src="/bg2" /></div>
+ *   <div style="background-image: xxx"></div>
+ *   <div style="background-image: xxx"></div>
  * </div>
  * ```
  */

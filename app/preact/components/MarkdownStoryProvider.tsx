@@ -10,6 +10,7 @@ import {
 } from "../../parser";
 import { useAudioContext } from "../use/useAudioContext";
 import { preload } from "../utils";
+import { StoryAnimation } from "../animate";
 
 interface MarkdownStoryProviderProps {
   children?: ComponentChildren;
@@ -34,7 +35,7 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
 
   const storyContext = useSignal<StoryContext | null>(null);
   const currentStory = useSignal<StoryGenerator | null>(null);
-  const animations = useSignal<Set<Animation>>(new Set());
+  const animations = useSignal<Set<StoryAnimation>>(new Set());
 
   // wait all animations done
   const waitAnimations = async () => {
@@ -43,8 +44,7 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
   };
 
   // add animations
-  const addAnimations = async (array: Animation[]) => {
-    console.log("adding animations");
+  const addAnimations = async (array: StoryAnimation[]) => {
     await Promise.all(
       array.map(async (animation) => {
         animations.value.add(animation);
@@ -113,8 +113,6 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
 
   // run a couple of actions, until we need user click
   const runActions = async () => {
-    console.log("run action");
-
     // game not started
     if (!currentStory.value) {
       return;
@@ -144,7 +142,6 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
 
   // run single step
   const click = async () => {
-    console.log("click");
     if (selections.value) {
       console.warn("use story.select() to make a choice");
       return;
@@ -198,15 +195,25 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
   const end = () => {
     batch(() => {
       playing.value = false;
+      currentStory.value = null;
+      storyContext.value = null;
+
       // reset backgrounds
       backgroundUrl.value = "";
       backgroundParentAnimation.value = "";
       backgroundImageAnimation.value = "";
+
       // reset text
       consoleName.value = "";
       consoleText.value = "";
-      consoleIdle.value = false;
+      consoleIdle.value = true;
       consoleVisible.value = true;
+
+      // reset selections
+      selections.value = null;
+
+      // clear animations
+      animations.value = new Set();
     });
   };
 

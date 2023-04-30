@@ -1,19 +1,25 @@
+import { StoryAnimation, animate } from "./animate";
+
 function parseAnimation(
   animation: string,
   defaultConfig: KeyframeAnimationOptions
 ) {
-  const animations = animation.split(" ").filter((x) => x.length > 0);
-
-  animations.forEach((animation) => {
-    // override duration
-    if (animation.startsWith("duration-")) {
-      defaultConfig.duration = +animation.slice(9);
-    }
-    // override fill-mode
-    if (animation.startsWith("fill-mode-")) {
-      defaultConfig.fill = animation.slice(10) as FillMode;
-    }
-  });
+  const animations = animation
+    .split(" ")
+    .filter((x) => x.length > 0)
+    .filter((animation) => {
+      // override duration
+      if (animation.startsWith("duration-")) {
+        defaultConfig.duration = +animation.slice(9);
+        return false;
+      }
+      // override fill-mode
+      if (animation.startsWith("fill-mode-")) {
+        defaultConfig.fill = animation.slice(10) as FillMode;
+        return false;
+      }
+      return true;
+    });
 
   return [animations, defaultConfig] as const;
 }
@@ -22,7 +28,7 @@ function parseAnimation(
  * Animate `fade-in`, `fade-out` animations
  */
 export function animateBackground(div: HTMLDivElement, animation: string) {
-  const animates: Animation[] = [];
+  const animates: StoryAnimation[] = [];
   const [animations, configs] = parseAnimation(animation, {
     duration: 1000,
     iterations: 1,
@@ -37,6 +43,28 @@ export function animateBackground(div: HTMLDivElement, animation: string) {
       case "fade-out":
         animates.push(div.animate([{ opacity: 1 }, { opacity: 0 }], configs));
         break;
+      case "conic-in":
+        animates.push(
+          animate((progress) => {
+            const a = progress * 1.1 - 0.1;
+            const b = progress * 1.1;
+            div.style.maskImage = `conic-gradient(white ${
+              a * 100
+            }%, transparent ${b * 100}%)`;
+          }, configs.duration as number)
+        );
+        break;
+      case "conic-out":
+        animates.push(
+          animate((progress) => {
+            const a = progress * 1.1 - 0.1;
+            const b = progress * 1.1;
+            div.style.maskImage = `conic-gradient(transparent ${
+              a * 100
+            }%, white ${b * 100}%)`;
+          }, configs.duration as number)
+        );
+        break;
 
       default:
         console.warn("unknown animation: " + animation);
@@ -50,7 +78,7 @@ export function animateBackground(div: HTMLDivElement, animation: string) {
  * Animate `to-bottom`, `to-top` animations
  */
 export function animateImage(div: HTMLDivElement, animation: string) {
-  const animates: Animation[] = [];
+  const animates: StoryAnimation[] = [];
   const [animations, configs] = parseAnimation(animation, {
     duration: 60000,
     iterations: 1,

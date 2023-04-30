@@ -2,6 +2,7 @@ import { Story } from "../../parser";
 import { ReadonlySignal } from "@preact/signals";
 import { createContext } from "preact";
 import { useContext } from "preact/hooks";
+import { StoryAnimation } from "../animate";
 
 export interface MarkdownStory {
   start(story: Story): void;
@@ -36,8 +37,8 @@ export interface MarkdownStory {
   /** make the selection */
   select(data: number): void;
 
-  /** wait animation to be done */
-  addAnimations(animations: Animation[]): Promise<void>;
+  /** add animations */
+  addAnimations(animations: StoryAnimation[]): Promise<void>;
 }
 
 export const MarkdownStoryContext = createContext<MarkdownStory | null>(null);
