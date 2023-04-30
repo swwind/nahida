@@ -1,6 +1,6 @@
 import type { Plugin } from "vite";
 import { createFilter } from "rollup-pluginutils";
-import { parseStory } from "../core/parser";
+import { parseStory } from "../core";
 
 type Options = {
   include?: string;

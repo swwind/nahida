@@ -18,12 +18,8 @@ export interface ParseContext {
 }
 
 function stringify(value: string | boolean | number) {
-  if (typeof value === "boolean") {
-    return value ? "true" : "false";
-  }
-
-  if (typeof value === "number") {
-    return value.toString();
+  if (typeof value === "boolean" || typeof value === "number") {
+    return String(value);
   }
 
   if (value.startsWith("\0")) {

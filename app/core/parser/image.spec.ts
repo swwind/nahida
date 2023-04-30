@@ -118,6 +118,34 @@ test("foreground with references", () => {
   assert.equal(story, result);
 });
 
+test("console and wait", () => {
+  const story = parseStory(
+    [
+      `![console](#show)`,
+      `![console](#hide)`,
+      `![console](#wait)`,
+      `![console](#wait "2000")`,
+    ].join("\n")
+  );
+
+  const result = [
+    `export default function* (ctx) {`,
+    `yield [9, true];`,
+    `yield [9];`,
+    `yield [8, 1000];`,
+    `yield [8, 2000];`,
+    `}`,
+  ].join("\n");
+
+  assert.equal(story, result);
+});
+
+test("console invalid actions", () => {
+  assert.throws(() => {
+    parseStory(`![console](#nahida)`);
+  });
+});
+
 test("bgm", () => {
   const story = parseStory(
     [
@@ -154,6 +182,42 @@ test("bgm", () => {
   ].join("\n");
 
   assert.equal(story, result);
+});
+
+test("bgm actions", () => {
+  const story = parseStory(
+    [
+      `![bgm](#play)`,
+      `![bgm](#pause)`,
+      `![bgm](#mute)`,
+      `![bgm](#unmute)`,
+      `![bgm](#fade-in)`,
+      `![bgm](#fade-in "2000")`,
+      `![bgm](#fade-out)`,
+      `![bgm](#fade-out "3000")`,
+    ].join("\n")
+  );
+
+  const result = [
+    `export default function* (ctx) {`,
+    `ctx.audio.bgm.play();`,
+    `ctx.audio.bgm.pause();`,
+    `ctx.audio.bgm.mute();`,
+    `ctx.audio.bgm.unmute();`,
+    `ctx.audio.bgm.fadeIn();`,
+    `ctx.audio.bgm.fadeIn(2000);`,
+    `ctx.audio.bgm.fadeOut();`,
+    `ctx.audio.bgm.fadeOut(3000);`,
+    `}`,
+  ].join("\n");
+
+  assert.equal(story, result);
+});
+
+test("bgm invalid actions", () => {
+  assert.throws(() => {
+    parseStory(`![bgm](#nahida)`);
+  });
 });
 
 test("sfx", () => {

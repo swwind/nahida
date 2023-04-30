@@ -75,13 +75,17 @@ test("serialize", () => {
     }
   }
 
-  run({ type: "sfx", url: "./sfx", animation: "" });
-  run({ type: "sfx", url: "./sfx", animation: "fade-in" });
-  run({ type: "bgm", url: "./bgm", animation: "" });
-  run({ type: "bgm", url: "./bgm", animation: "fade-in" });
+  run({ type: "sfx", url: "./sfx" });
+  run({ type: "bgm", url: "./bgm" });
 
   run({ type: "select", options: ["must have one"] });
   run({ type: "select", options: ["must have one", "maybe two"] });
+
+  run({ type: "console", visible: true });
+  run({ type: "console", visible: false });
+
+  run({ type: "wait", time: 0 });
+  run({ type: "wait", time: 114514 });
 });
 
 test.run();

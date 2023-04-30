@@ -40,13 +40,11 @@ export type TextAction = {
 export type BackgroundMusicAction = {
   type: "bgm";
   url: string;
-  animation: string;
 };
 
 export type SoundEffectAction = {
   type: "sfx";
   url: string;
-  animation: string;
 };
 
 export type SelectAction = {

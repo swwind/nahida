@@ -78,15 +78,13 @@ export function parseStoryImage(ctx: ParseContext, image: Image) {
     }
 
     const url = ctx.import(image.url + "?url", "audio");
-    const animation = image.title ?? "";
-    ctx.yield({ type: "bgm", url, animation });
+    ctx.yield({ type: "bgm", url });
     return;
   }
 
   if (alt.includes("sfx")) {
     const url = ctx.import(image.url + "?url", "audio");
-    const animation = image.title ?? "";
-    ctx.yield({ type: "sfx", url, animation });
+    ctx.yield({ type: "sfx", url });
     return;
   }
 

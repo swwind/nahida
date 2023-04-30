@@ -55,10 +55,7 @@ export function serialize(action: Action): SerializedAction {
         ),
       ];
     case "sfx":
-      return [
-        ActionType.SOUND_EFFECT,
-        ...shorten(action.url, action.animation),
-      ];
+      return [ActionType.SOUND_EFFECT, ...shorten(action.url)];
     case "text":
       return [
         ActionType.TEXT,
@@ -67,10 +64,7 @@ export function serialize(action: Action): SerializedAction {
     case "select":
       return [ActionType.SELECT, ...action.options];
     case "bgm":
-      return [
-        ActionType.BACKGROUND_MUSIC,
-        ...shorten(action.url, action.animation),
-      ];
+      return [ActionType.BACKGROUND_MUSIC, ...shorten(action.url)];
     case "wait":
       return [ActionType.WAIT, ...shorten(action.time)];
     case "console":
@@ -120,29 +114,13 @@ export function deserialize(
         imageAnimation: string(),
       };
     case ActionType.SOUND_EFFECT:
-      return {
-        type: "sfx",
-        url: string(),
-        animation: string(),
-      };
+      return { type: "sfx", url: string() };
     case ActionType.TEXT:
-      return {
-        type: "text",
-        text: string(),
-        name: string(),
-        vocal: string(),
-      };
+      return { type: "text", text: string(), name: string(), vocal: string() };
     case ActionType.SELECT:
-      return {
-        type: "select",
-        options: array(),
-      };
+      return { type: "select", options: array() };
     case ActionType.BACKGROUND_MUSIC:
-      return {
-        type: "bgm",
-        url: string(),
-        animation: string(),
-      };
+      return { type: "bgm", url: string() };
     case ActionType.WAIT:
       return { type: "wait", time: number() };
     case ActionType.CONSOLE:
