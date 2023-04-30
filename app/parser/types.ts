@@ -54,6 +54,16 @@ export type SelectAction = {
   options: string[];
 };
 
+export type WaitAction = {
+  type: "wait";
+  time: number;
+};
+
+export type ConsoleAction = {
+  type: "console";
+  visible: boolean;
+};
+
 export type Action =
   | BackgroundAction
   | ForegroundAction
@@ -62,7 +72,9 @@ export type Action =
   | SoundEffectAction
   | TextAction
   | SelectAction
-  | BackgroundMusicAction;
+  | BackgroundMusicAction
+  | WaitAction
+  | ConsoleAction;
 
 export interface ConsoleContext {
   /** show console */

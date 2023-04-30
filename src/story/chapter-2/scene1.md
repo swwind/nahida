@@ -1,9 +1,11 @@
-
----
+![console](#hide)
+![console](#wait "2000")
+![console](#show)
 
 ……
 
 ![console](#hide)
+![console](#wait "2000")
 ![bg fade-in][home]
 ![console](#show)
 
@@ -107,11 +109,19 @@
 
 ![console](#hide)
 ![bg fade-out][home]
+![console](#wait "2000")
 ![console](#show)
 
 ……
 
 ![console](#hide)
+![console](#wait "2000")
+![console](#show)
+
+…………
+
+![console](#hide)
+![console](#wait "2000")
 ![bg fade-in][home]
 ![console](#show)
 

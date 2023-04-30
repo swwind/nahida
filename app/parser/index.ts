@@ -5,12 +5,20 @@ import { parseStoryContents } from "./story/contents";
 import { ParseContext } from "./utils";
 import { serialize } from "./serialize";
 
-function stringify(text: string) {
-  if (text.startsWith("\0")) {
+function stringify(value: string | boolean | number) {
+  if (typeof value === "boolean") {
+    return value ? "true" : "false";
+  }
+
+  if (typeof value === "number") {
+    return value.toString();
+  }
+
+  if (value.startsWith("\0")) {
     // is variable
-    return text.slice(1);
+    return value.slice(1);
   } else {
-    return JSON.stringify(text);
+    return JSON.stringify(value);
   }
 }
 

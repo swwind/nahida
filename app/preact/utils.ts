@@ -64,7 +64,6 @@ export function animateBackground(div: HTMLDivElement, animation: string) {
       case "blinds-in":
         animates.push(
           animate((progress) => {
-            console.log("in", progress);
             const a = progress * 1.5 - 0.5;
             const b = progress * 1.5;
             setMask(
@@ -80,7 +79,6 @@ export function animateBackground(div: HTMLDivElement, animation: string) {
       case "blinds-out":
         animates.push(
           animate((progress) => {
-            console.log("out", progress);
             const a = progress * 1.5 - 0.5;
             const b = progress * 1.5;
             setMask(

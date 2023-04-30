@@ -9,11 +9,13 @@ export enum ActionType {
   TEXT,
   SELECT,
   BACKGROUND_MUSIC,
+  WAIT,
+  CONSOLE,
 }
 
-export type SerializedAction = [ActionType, ...string[]];
+export type SerializedAction = [ActionType, ...(string | number | boolean)[]];
 
-export function shorten(...params: string[]) {
+export function shorten(...params: (string | number | boolean)[]) {
   while (params.length > 0 && !params[params.length - 1]) {
     params.pop();
   }
@@ -69,67 +71,81 @@ export function serialize(action: Action): SerializedAction {
         ActionType.BACKGROUND_MUSIC,
         ...shorten(action.url, action.animation),
       ];
+    case "wait":
+      return [ActionType.WAIT, ...shorten(action.time)];
+    case "console":
+      return [ActionType.CONSOLE, ...shorten(action.visible)];
   }
 }
 
-export function deserialize(type: ActionType, ...action: string[]): Action {
+export function deserialize(
+  type: ActionType,
+  ...action: (string | number | boolean)[]
+): Action {
   let index = 0;
-  const param = () => action[index++] || "";
+  const string = () => (action[index++] || "") as string;
+  const number = () => (action[index++] || 0) as number;
+  const boolean = () => (action[index++] || false) as boolean;
+  const array = () => action as string[];
 
   switch (type) {
     case ActionType.BACKGROUND:
       return {
         type: "background",
-        url: param(),
-        parentAnimation: param(),
-        imageAnimation: param(),
+        url: string(),
+        parentAnimation: string(),
+        imageAnimation: string(),
       };
     case ActionType.FOREGROUND:
       return {
         type: "foreground",
-        url: param(),
-        parentAnimation: param(),
-        imageAnimation: param(),
+        url: string(),
+        parentAnimation: string(),
+        imageAnimation: string(),
       };
     case ActionType.CHARACTER:
       return {
         type: "character",
-        url: param(),
-        identity: param(),
-        parentAnimation: param(),
-        imageAnimation: param(),
+        url: string(),
+        identity: string(),
+        parentAnimation: string(),
+        imageAnimation: string(),
       };
     case ActionType.REMOVE_CHARACTER:
       return {
         type: "remove-character",
-        url: param(),
-        identity: param(),
-        parentAnimation: param(),
-        imageAnimation: param(),
+        url: string(),
+        identity: string(),
+        parentAnimation: string(),
+        imageAnimation: string(),
       };
     case ActionType.SOUND_EFFECT:
       return {
         type: "sfx",
-        url: param(),
-        animation: param(),
+        url: string(),
+        animation: string(),
       };
     case ActionType.TEXT:
       return {
         type: "text",
-        text: param(),
-        name: param(),
-        vocal: param(),
+        text: string(),
+        name: string(),
+        vocal: string(),
       };
     case ActionType.SELECT:
       return {
         type: "select",
-        options: action,
+        options: array(),
       };
     case ActionType.BACKGROUND_MUSIC:
       return {
         type: "bgm",
-        url: param(),
-        animation: param(),
+        url: string(),
+        animation: string(),
       };
+    case ActionType.WAIT:
+      return { type: "wait", time: number() };
+    case ActionType.CONSOLE:
+      return { type: "console", visible: boolean() };
   }
 }

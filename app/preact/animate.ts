@@ -45,3 +45,22 @@ export function animate(
     finished,
   };
 }
+
+export function justWait(time: number): SimpleAnimation {
+  let resolveFn: (() => void) | null = null;
+
+  const finished = new Promise<void>((resolve) => {
+    resolveFn = resolve;
+  });
+
+  const finish = () => {
+    if (resolveFn) {
+      resolveFn();
+      resolveFn = null;
+    }
+  };
+
+  setTimeout(finish, time);
+
+  return { finish, finished };
+}

@@ -26,7 +26,7 @@ test("shorten", () => {
 });
 
 function run(action: Action) {
-  const [type, params] = serialize(action);
+  const [type, ...params] = serialize(action);
   assert.equal(action, deserialize(type, ...params));
 }
 

@@ -92,11 +92,17 @@ export function parseStoryImage(ctx: ParseContext, image: Image) {
 
   if (alt.includes("console")) {
     switch (image.url) {
+      // ![console](#show)
       case "#show":
-        ctx.append(`ctx.console.show();`);
+        ctx.yield({ type: "console", visible: true });
         return;
+      // ![console](#hide)
       case "#hide":
-        ctx.append(`ctx.console.hide();`);
+        ctx.yield({ type: "console", visible: false });
+        return;
+      // ![console](#wait "1000")
+      case "#wait":
+        ctx.yield({ type: "wait", time: image.title ? +image.title : 1000 });
         return;
       default:
         throw new ParseError(

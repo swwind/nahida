@@ -10,7 +10,7 @@ import {
 } from "../../parser";
 import { useAudioContext } from "../use/useAudioContext";
 import { preload } from "../utils";
-import { StoryAnimation } from "../animate";
+import { StoryAnimation, justWait } from "../animate";
 
 interface MarkdownStoryProviderProps {
   children?: ComponentChildren;
@@ -108,6 +108,16 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
         audio.sfx.play(action.url);
         return;
       }
+      case "wait": {
+        addAnimations([justWait(action.time)]);
+        await waitAnimations();
+        return;
+      }
+      case "console": {
+        consoleVisible.value = action.visible;
+        await waitAnimations();
+        return;
+      }
     }
   };
 
@@ -129,7 +139,7 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
 
       // story finished
       if (next.done) {
-        playing.value = false;
+        end();
         break;
       }
 

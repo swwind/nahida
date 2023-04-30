@@ -1,4 +1,7 @@
 ![bgm][bgm-boundless-bliss]
+![console](#hide)
+![console](#wait "2000")
+![console](#show)
 ![bg fade-in][bg-1]
 
 ---

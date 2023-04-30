@@ -6,10 +6,6 @@
 
     & > div {
       @apply w-full h-full absolute inset-0;
-
-      & > img {
-        @apply w-full h-full;
-      }
     }
   }
 
