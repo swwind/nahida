@@ -13,7 +13,6 @@ export function Game() {
 
   useEffect(() => {
     story.start(intro);
-    story.click();
     return () => story.end();
   }, []);
 
