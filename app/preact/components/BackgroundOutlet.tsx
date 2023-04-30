@@ -41,10 +41,10 @@ export function BackgroundOutlet() {
       const background = document.createElement("div");
       background.style.backgroundImage = `url(${url})`;
 
+      div.appendChild(background);
+
       const animations = animateBackground(background, parentAnimation);
       animateImage(background, imageAnimation);
-
-      div.appendChild(background);
 
       story.addAnimations(animations).then(() => {
         // remove old backgrounds when animations done

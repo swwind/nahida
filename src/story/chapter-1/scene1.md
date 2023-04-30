@@ -9,6 +9,11 @@
 
 不过，或许这就是神明的美好之处吧。
 
+![console](#hide)
+![bg blinds-out][bg-1]
+![bg blinds-in][bg-1]
+![console](#show)
+
 # 纳西妲
 
 「为什么一直看着我？」

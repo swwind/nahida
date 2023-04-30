@@ -14,10 +14,16 @@
   }
 
   .console {
-    @apply w-full h-1/3 absolute bottom-0 left-0 bg-gradient-to-t from-black/60 to-transparent text-white transition-opacity duration-500;
+    @apply w-full h-1/3 absolute bottom-0 left-0 text-white transition-opacity duration-500;
+    background-image: linear-gradient(
+      to top,
+      #0008 0%,
+      #0003 90%,
+      transparent 100%
+    );
 
     .name {
-      @apply font-extrabold mx-24;
+      @apply font-bold mx-24;
       // text-shadow: 0 0 4px black;
 
       &::before {
@@ -38,8 +44,8 @@
     .text {
       @apply mx-28 relative;
 
-      & > span {
-        @apply font-extrabold text-transparent mr-2;
+      :first-child {
+        @apply font-bold text-transparent mr-2;
 
         background: linear-gradient(white 0 0),
           linear-gradient(to right, white, transparent);
@@ -59,17 +65,19 @@
       }
 
       .indicator {
-        @apply w-4 h-4 align-middle inline-block scale-y-125;
+        @apply w-4 h-4 align-middle inline-block bg-lime-500;
         animation: img-bounce 0.8571428571428571s ease-in-out infinite alternate,
           fade-in 300ms linear forwards;
+        mask-image: url(../assets/images/icons/dendro.webp);
+        mask-size: cover;
       }
 
       @keyframes img-bounce {
         from {
-          @apply translate-y-0 scale-x-125;
+          transform: translate(0, 0) scale(1.25, 1.25);
         }
         to {
-          @apply -translate-y-0.5 -scale-x-125;
+          transform: translate(0, -0.125rem) scale(-1.25, 1.25);
         }
       }
 

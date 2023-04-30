@@ -6,7 +6,6 @@ import intro from "../story/intro.md";
 import { PauseIcon } from "~/icons/pause";
 import { useEffect } from "preact/hooks";
 import { TextOutlet } from "@/preact/components/TextOutlet";
-import dendro from "../assets/images/icons/dendro.webp?url";
 
 export function Game() {
   const story = useMarkdownStory();
@@ -29,7 +28,7 @@ export function Game() {
         <div class="name">{story.console.name.value}</div>
         <div class="text">
           <TextOutlet />
-          {story.console.idle.value && <img src={dendro} class="indicator" />}
+          {story.console.idle.value && <span class="indicator" />}
         </div>
       </div>
 
