@@ -1,6 +1,6 @@
 import { Heading } from "mdast";
-import { ParseContext } from "../utils";
-import { ParseError } from "../error";
+import { ParseContext } from ".";
+import { ParseError } from "./error";
 
 export function parseStoryHeading(ctx: ParseContext, heading: Heading) {
   if (!heading.children.length) {

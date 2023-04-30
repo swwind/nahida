@@ -1,7 +1,7 @@
 import { List } from "mdast";
-import { ParseContext } from "../utils";
+import { ParseContext } from ".";
 import { parseStoryContents } from "./contents";
-import { ParseError } from "../error";
+import { ParseError } from "./error";
 
 export function parseStoryList(ctx: ParseContext, list: List) {
   const ordered = list.ordered || false;

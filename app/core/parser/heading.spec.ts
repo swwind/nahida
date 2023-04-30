@@ -1,6 +1,6 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { parseStory } from "..";
+import { parseStory } from "../parser";
 
 test("headings", () => {
   const story = parseStory(

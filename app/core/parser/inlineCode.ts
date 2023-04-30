@@ -1,5 +1,5 @@
 import { InlineCode } from "mdast";
-import { ParseContext } from "../utils";
+import { ParseContext } from ".";
 
 export function parseStoryInlineCode(
   ctx: ParseContext,

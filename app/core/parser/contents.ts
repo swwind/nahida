@@ -1,5 +1,5 @@
 import { BlockContent, Content, DefinitionContent } from "mdast";
-import { ParseContext } from "../utils";
+import { ParseContext } from ".";
 import { parseStoryHeading } from "./heading";
 import { parseStoryHtml } from "./html";
 import { parseStoryCode } from "./code";
@@ -9,7 +9,7 @@ import { parseStoryImage } from "./image";
 import { parseStoryLink } from "./link";
 import { parseStoryInlineCode } from "./inlineCode";
 import { parseStoryThematicBreak } from "./thematicBreak";
-import { ParseError } from "../error";
+import { ParseError } from "./error";
 
 export function parseStoryContents(
   ctx: ParseContext,

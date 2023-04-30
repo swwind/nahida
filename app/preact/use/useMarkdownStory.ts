@@ -1,4 +1,4 @@
-import { Story } from "../../parser";
+import { Story } from "@/core";
 import { ReadonlySignal } from "@preact/signals";
 import { createContext } from "preact";
 import { useContext } from "preact/hooks";

@@ -1,6 +1,6 @@
 import { createContext } from "preact";
 import { useContext } from "preact/hooks";
-import { AudioContext } from "../../parser";
+import { AudioContext } from "@/core";
 
 export const AudioContextContext = createContext<AudioContext | null>(null);
 

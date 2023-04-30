@@ -1,6 +1,6 @@
 import { Link } from "mdast";
-import { ParseContext } from "../utils";
-import { ParseError } from "../error";
+import { ParseContext } from ".";
+import { ParseError } from "./error";
 
 export function parseStoryLink(ctx: ParseContext, link: Link) {
   if (link.children.length === 1 && link.children[0].type === "text") {

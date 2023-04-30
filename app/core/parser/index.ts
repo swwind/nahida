@@ -1,9 +1,21 @@
 import { remark } from "remark";
 import remarkInlineLinks from "remark-inline-links";
 
-import { parseStoryContents } from "./story/contents";
-import { ParseContext } from "./utils";
-import { serialize } from "./serialize";
+import { parseStoryContents } from "./contents";
+import { serialize } from "../serialize";
+import { Action } from "../types";
+
+export type ImportType = "image" | "audio";
+
+export interface ParseContext {
+  name: `\0${string}` | null;
+  vocal: `\0${string}` | null;
+
+  import: (url: string, type?: ImportType) => `\0${string}`;
+  cache: (name: string) => `\0${string}`;
+  append: (code: string) => void;
+  yield: (action: Action) => void;
+}
 
 function stringify(value: string | boolean | number) {
   if (typeof value === "boolean") {
@@ -83,6 +95,3 @@ export function parseStory(markdown: string) {
     "}",
   ].join("\n");
 }
-
-export * from "./types";
-export { serialize, deserialize } from "./serialize";

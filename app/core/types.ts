@@ -76,13 +76,6 @@ export type Action =
   | WaitAction
   | ConsoleAction;
 
-export interface ConsoleContext {
-  /** show console */
-  show(): void;
-  /** hide console */
-  hide(): void;
-}
-
 export interface AudioContext {
   bgm: {
     /** change BGM track, this will fade out previous track before change to new one */
@@ -108,7 +101,6 @@ export interface AudioContext {
 
 export type StoryContext = {
   selection: number;
-  console: ConsoleContext;
   audio: AudioContext;
   preload: (url: string, as: string) => void;
 };

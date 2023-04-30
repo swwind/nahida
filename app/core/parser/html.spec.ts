@@ -1,16 +1,15 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { parseStory } from "..";
+import { parseStory } from "../parser";
 
 test("html", () => {
   const story = parseStory(
     [
-      "```js",
-      "function add(a, b) {",
-      "  return a + b;",
-      "}",
-      "const alice = add(0.1, 0.2);",
-      "```",
+      "<script>",
+      "  const alice = 0.1 + 0.2;",
+      "</script>",
+      "",
+      "<!-- nothing -->",
       "",
       "我觉得你说的很对",
     ].join("\n")
@@ -18,15 +17,18 @@ test("html", () => {
 
   const result = [
     `export default function* (ctx) {`,
-    `function add(a, b) {`,
-    `  return a + b;`,
-    `}`,
-    `const alice = add(0.1, 0.2);`,
+    `const alice = 0.1 + 0.2;`,
     `yield [5, "我觉得你说的很对"];`,
     `}`,
   ].join("\n");
 
   assert.equal(story, result);
+});
+
+test("throws on unknown html", () => {
+  assert.throws(() => {
+    parseStory("<p>hello</p>");
+  });
 });
 
 test.run();

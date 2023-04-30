@@ -1,7 +1,7 @@
 {
   "name": "markdown-story",
   "version": "1.0.0",
-  "main": "./lib/parser.mjs",
+  "main": "./lib/core.mjs",
   "type": "module",
   "license": "MIT",
   "sideEffect": false,
@@ -10,9 +10,9 @@
   ],
   "exports": {
     ".": {
-      "import": "./lib/parser.mjs",
-      "require": "./lib/parser.cjs",
-      "types": "./lib/types/app/parser/index.d.ts"
+      "import": "./lib/core.mjs",
+      "require": "./lib/core.cjs",
+      "types": "./lib/types/app/core/index.d.ts"
     },
     "./preact": {
       "import": "./lib/preact.mjs",
@@ -26,14 +26,14 @@
     }
   },
   "scripts": {
-    "build": "yarn build:example && yarn build:vite:esm && yarn build:vite:cjs && yarn build:preact:esm && yarn build:preact:cjs && yarn build:parser:esm && yarn build:parser:cjs",
+    "build": "yarn build:example && yarn build:vite:esm && yarn build:vite:cjs && yarn build:preact:esm && yarn build:preact:cjs && yarn build:core:esm && yarn build:core:cjs",
     "build:example": "tsc && vite build",
     "build:vite:esm": "esbuild app/vite/index.ts --bundle --format=esm --platform=node --minify --outfile=lib/vite.mjs --external:rollup-pluginutils --external:remark --external:remark-inline-links",
     "build:vite:cjs": "esbuild app/vite/index.ts --bundle --format=cjs --platform=node --minify --outfile=lib/vite.cjs --external:rollup-pluginutils --external:remark --external:remark-inline-links",
     "build:preact:esm": "esbuild app/preact/index.ts --bundle --format=esm --platform=browser --minify --outfile=lib/preact.mjs --external:preact --external:@preact/signals",
     "build:preact:cjs": "esbuild app/preact/index.ts --bundle --format=cjs --platform=browser --minify --outfile=lib/preact.cjs --external:preact --external:@preact/signals",
-    "build:parser:esm": "esbuild app/parser/index.ts --bundle --format=esm --platform=node --minify --outfile=lib/parser.mjs --external:remark --external:remark-inline-links",
-    "build:parser:cjs": "esbuild app/parser/index.ts --bundle --format=cjs --platform=node --minify --outfile=lib/parser.cjs --external:remark --external:remark-inline-links",
+    "build:core:esm": "esbuild app/core/index.ts --bundle --format=esm --platform=node --minify --outfile=lib/core.mjs --external:remark --external:remark-inline-links",
+    "build:core:cjs": "esbuild app/core/index.ts --bundle --format=cjs --platform=node --minify --outfile=lib/core.cjs --external:remark --external:remark-inline-links",
     "test": "uvu -r esbuild-register",
     "coverage": "c8 yarn test",
     "dev": "vite dev"

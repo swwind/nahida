@@ -7,7 +7,7 @@ import {
   StoryContext,
   StoryGenerator,
   deserialize,
-} from "../../parser";
+} from "@/core";
 import { useAudioContext } from "../use/useAudioContext";
 import { preload } from "../utils";
 import { StoryAnimation, justWait } from "../animate";
@@ -188,10 +188,6 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
     batch(() => {
       storyContext.value = {
         selection: 0,
-        console: {
-          show: () => (consoleVisible.value = true),
-          hide: () => (consoleVisible.value = false),
-        },
         audio,
         preload,
       };

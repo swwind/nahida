@@ -1,6 +1,6 @@
 import { HTML } from "mdast";
-import { ParseContext } from "../utils";
-import { ParseError } from "../error";
+import { ParseContext } from ".";
+import { ParseError } from "./error";
 
 export function parseStoryHtml(ctx: ParseContext, html: HTML) {
   if (html.value.startsWith("<script>") && html.value.endsWith("</script>")) {

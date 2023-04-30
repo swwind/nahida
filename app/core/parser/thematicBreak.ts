@@ -1,5 +1,5 @@
 import { ThematicBreak } from "mdast";
-import { ParseContext } from "../utils";
+import { ParseContext } from ".";
 
 export function parseStoryThematicBreak(
   ctx: ParseContext,
