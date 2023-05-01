@@ -1,5 +1,5 @@
 import { ComponentChildren } from "preact";
-import { MarkdownStoryContext } from "../use/useMarkdownStory";
+import { Figure, MarkdownStoryContext } from "../use/useMarkdownStory";
 import { batch, useSignal } from "@preact/signals";
 import {
   Action,
@@ -33,6 +33,9 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
   const consoleIdle = useSignal(true);
   const consoleVisible = useSignal(true);
 
+  // figure signals
+  const figures = useSignal<Figure[]>([]);
+
   const storyContext = useSignal<StoryContext | null>(null);
   const currentStory = useSignal<StoryGenerator | null>(null);
   const animations = useSignal<Set<StoryAnimation>>(new Set());
@@ -41,6 +44,11 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
   const waitAnimations = async () => {
     const array = [...animations.value];
     await Promise.all(array.map((animation) => animation.finished));
+  };
+
+  // skip all animations
+  const skipAnimations = () => {
+    animations.value.forEach((animate) => animate.finish());
   };
 
   // add animations
@@ -73,12 +81,39 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
         // TODO
         return;
       }
-      case "character": {
-        // TODO
+      case "figure": {
+        let found = figures.value.find(
+          (fig) => fig.identity === action.identity
+        );
+        if (!found) {
+          found = {
+            identity: action.identity,
+            url: "",
+            size: action.size,
+            position: action.position,
+          };
+          figures.value = [...figures.value, found];
+          // const promise = waitAnimations();
+          // skipAnimations();
+          // await promise;
+        }
+        found.url = action.url;
+        found.size = action.size;
+        found.position = action.position;
+        figures.value = [...figures.value];
+        // await waitAnimations();
         return;
       }
-      case "remove-character": {
-        // TODO
+      case "remove-figure": {
+        const found = figures.value.find(
+          (fig) => fig.identity === action.identity
+        );
+        if (found) {
+          found.url = "";
+          // found.size = "";
+          // found.position = "";
+          figures.value = [...figures.value];
+        }
         return;
       }
       case "text": {
@@ -159,7 +194,7 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
 
     // finish animation if not finish
     if (animations.value.size > 0) {
-      animations.value.forEach((animate) => animate.finish());
+      skipAnimations();
       return;
     }
 
@@ -215,6 +250,9 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
       consoleIdle.value = true;
       consoleVisible.value = true;
 
+      // remove figures
+      figures.value = [];
+
       // reset selections
       selections.value = null;
 
@@ -241,6 +279,7 @@ export function MarkdownStoryProvider(props: MarkdownStoryProviderProps) {
           parentAnimation: backgroundParentAnimation,
           imageAnimation: backgroundImageAnimation,
         },
+        figures,
         click,
         select,
         addAnimations,

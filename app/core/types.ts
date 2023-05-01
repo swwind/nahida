@@ -14,20 +14,17 @@ export type ForegroundAction = {
   imageAnimation: string;
 };
 
-export type CharacterAction = {
-  type: "character";
+export type FigureAction = {
+  type: "figure";
   url: string;
   identity: string;
-  parentAnimation: string;
-  imageAnimation: string;
+  size: string;
+  position: string;
 };
 
-export type RemoveCharacterAction = {
-  type: "remove-character";
-  url: string;
+export type RemoveFigureAction = {
+  type: "remove-figure";
   identity: string;
-  parentAnimation: string;
-  imageAnimation: string;
 };
 
 export type TextAction = {
@@ -65,8 +62,8 @@ export type ConsoleAction = {
 export type Action =
   | BackgroundAction
   | ForegroundAction
-  | CharacterAction
-  | RemoveCharacterAction
+  | FigureAction
+  | RemoveFigureAction
   | SoundEffectAction
   | TextAction
   | SelectAction

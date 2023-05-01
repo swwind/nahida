@@ -258,33 +258,50 @@ test("sfx", () => {
   assert.equal(story, result);
 });
 
-test("character", () => {
+test("figure", () => {
   const story = parseStory(
     [
-      `![+alice top-20](./figure/alice.png "w-32")`,
-      `![+alice top-30](./figure/alice.png)`,
-      ``,
-      `![+bob top-30][bob]`,
-      `![-bob top-30 fade-out][bob]`,
-      ``,
-      `[bob]: ./figure/bob.png "w-40"`,
+      `![fig](./figure/alice.png "alice")`,
+      `![fig](./figure/alice.png "alice 30%")`,
+      `![fig](./figure/alice.png "alice contain / left")`,
+      `![fig](./figure/alice.png "alice cover / left 20px top 40px")`,
+      `![fig](./figure/alice.png "alice / center")`,
+      `![fig](#remove "alice")`,
     ].join("\n")
   );
 
   const result = [
     `import story_0 from "./figure/alice.png?url";`,
-    `import story_1 from "./figure/bob.png?url";`,
     `export default function* (ctx) {`,
     `ctx.preload(story_0, "image");`,
-    `ctx.preload(story_1, "image");`,
-    `yield [2, story_0, "alice", "top-20", "w-32"];`,
-    `yield [2, story_0, "alice", "top-30"];`,
-    `yield [2, story_1, "bob", "top-30", "w-40"];`,
-    `yield [3, story_1, "bob", "top-30 fade-out", "w-40"];`,
+    `yield [2, story_0, "alice"];`,
+    `yield [2, story_0, "alice", "30%"];`,
+    `yield [2, story_0, "alice", "contain", "left"];`,
+    `yield [2, story_0, "alice", "cover", "left 20px top 40px"];`,
+    `yield [2, story_0, "alice", "", "center"];`,
+    `yield [3, "alice"];`,
     `}`,
   ].join("\n");
 
   assert.equal(story, result);
+});
+
+test("throws on unknown figure action", () => {
+  assert.throws(() => {
+    parseStory(`![fig](#nahida)`);
+  });
+});
+
+test("throws on unknown figure without name", () => {
+  assert.throws(() => {
+    parseStory(`![fig](./figure/alice.png)`);
+  });
+});
+
+test("throws on unknown figure action without name", () => {
+  assert.throws(() => {
+    parseStory(`![fig](#remove)`);
+  });
 });
 
 test("throws on unknown image", () => {

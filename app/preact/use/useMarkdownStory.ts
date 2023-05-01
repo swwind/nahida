@@ -4,6 +4,13 @@ import { createContext } from "preact";
 import { useContext } from "preact/hooks";
 import { StoryAnimation } from "../animate";
 
+export interface Figure {
+  identity: string;
+  url: string;
+  size: string;
+  position: string;
+}
+
 export interface MarkdownStory {
   start(story: Story): void;
   end(): void;
@@ -31,6 +38,8 @@ export interface MarkdownStory {
     /** current console is visible or not */
     visible: ReadonlySignal<boolean>;
   };
+
+  figures: ReadonlySignal<Figure[]>;
 
   /** step function, skip current animation or jump to next */
   click(): void;

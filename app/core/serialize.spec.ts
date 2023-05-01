@@ -49,25 +49,19 @@ test("serialize", () => {
     }
   }
 
-  for (const parentAnimation of ["", "animate", "animate animate"]) {
-    for (const imageAnimation of ["", "w-32", "w-32 h-32"]) {
+  for (const size of ["", "cover", "30% 40%"]) {
+    for (const position of ["", "left", "left 20px top 40px"]) {
       run({
-        type: "character",
+        type: "figure",
         url: "./url",
         identity: "alice",
-        parentAnimation,
-        imageAnimation,
-      });
-
-      run({
-        type: "remove-character",
-        url: "./url",
-        identity: "alice",
-        parentAnimation,
-        imageAnimation,
+        size,
+        position,
       });
     }
   }
+
+  run({ type: "remove-figure", identity: "alice" });
 
   for (const name of ["", "alice", "bob"]) {
     for (const vocal of ["", "./vocal"]) {

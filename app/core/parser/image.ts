@@ -42,18 +42,23 @@ export function parseStoryImage(ctx: ParseContext, image: Image) {
   if (alt.includes("bgm")) {
     if (image.url.startsWith("#")) {
       switch (image.url) {
+        // ![bgm](#play)
         case "#play":
           ctx.append("ctx.audio.bgm.play();");
           return;
+        // ![bgm](#pause)
         case "#pause":
           ctx.append("ctx.audio.bgm.pause();");
           return;
+        // ![bgm](#mute)
         case "#mute":
           ctx.append("ctx.audio.bgm.mute();");
           return;
+        // ![bgm](#unmute)
         case "#unmute":
           ctx.append("ctx.audio.bgm.unmute();");
           return;
+        // ![bgm](#fade-in "1000")
         case "#fade-in":
           if (image.title) {
             ctx.append(`ctx.audio.bgm.fadeIn(${image.title});`);
@@ -61,6 +66,7 @@ export function parseStoryImage(ctx: ParseContext, image: Image) {
             ctx.append(`ctx.audio.bgm.fadeIn();`);
           }
           return;
+        // ![bgm](#fade-out "1000")
         case "#fade-out":
           if (image.title) {
             ctx.append(`ctx.audio.bgm.fadeOut(${image.title});`);
@@ -110,32 +116,38 @@ export function parseStoryImage(ctx: ParseContext, image: Image) {
     }
   }
 
-  if (alt.some((v) => v.startsWith("+") || v.startsWith("-"))) {
-    const char = alt.find((v) => v.startsWith("+") || v.startsWith("-"))!;
-    const url = ctx.import(image.url + "?url", "image");
-    const identity = char.slice(1);
-    const parentAnimation = alt
-      .filter((x) => !x.startsWith("+") && !x.startsWith("-"))
-      .join(" ");
-    const imageAnimation = image.title ?? "";
-
-    if (char.startsWith("-")) {
-      ctx.yield({
-        type: "remove-character",
-        url,
-        identity,
-        parentAnimation,
-        imageAnimation,
-      });
-    } else {
-      ctx.yield({
-        type: "character",
-        url,
-        identity,
-        parentAnimation,
-        imageAnimation,
-      });
+  if (alt.includes("fig")) {
+    if (image.url.startsWith("#")) {
+      switch (image.url) {
+        case "#remove":
+          if (!image.title) {
+            throw new ParseError("No figure name", image.position);
+          }
+          ctx.yield({
+            type: "remove-figure",
+            identity: image.title,
+          });
+          return;
+        default:
+          throw new ParseError(
+            `Unknown figure operation: ${image.url}`,
+            image.position
+          );
+      }
     }
+
+    const title = (image.title || "").split(" ").filter((x) => x.length > 0);
+    if (!title.length) {
+      throw new ParseError("No figure name", image.position);
+    }
+
+    const identity = title.shift()!;
+    let slashIndex = title.indexOf("/");
+    if (slashIndex === -1) slashIndex = title.length;
+    const size = title.slice(0, slashIndex).join(" ");
+    const position = title.slice(slashIndex + 1).join(" ");
+    const url = ctx.import(image.url + "?url", "image");
+    ctx.yield({ type: "figure", url, identity, size, position });
     return;
   }
 

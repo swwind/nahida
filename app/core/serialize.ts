@@ -3,8 +3,8 @@ import { Action } from "./types";
 export enum ActionType {
   BACKGROUND,
   FOREGROUND,
-  CHARACTER,
-  REMOVE_CHARACTER,
+  FIGURE,
+  REMOVE_FIGURE,
   SOUND_EFFECT,
   TEXT,
   SELECT,
@@ -34,26 +34,13 @@ export function serialize(action: Action): SerializedAction {
         ActionType.FOREGROUND,
         ...shorten(action.url, action.parentAnimation, action.imageAnimation),
       ];
-    case "character":
+    case "figure":
       return [
-        ActionType.CHARACTER,
-        ...shorten(
-          action.url,
-          action.identity,
-          action.parentAnimation,
-          action.imageAnimation
-        ),
+        ActionType.FIGURE,
+        ...shorten(action.url, action.identity, action.size, action.position),
       ];
-    case "remove-character":
-      return [
-        ActionType.REMOVE_CHARACTER,
-        ...shorten(
-          action.url,
-          action.identity,
-          action.parentAnimation,
-          action.imageAnimation
-        ),
-      ];
+    case "remove-figure":
+      return [ActionType.REMOVE_FIGURE, ...shorten(action.identity)];
     case "sfx":
       return [ActionType.SOUND_EFFECT, ...shorten(action.url)];
     case "text":
@@ -97,22 +84,16 @@ export function deserialize(
         parentAnimation: string(),
         imageAnimation: string(),
       };
-    case ActionType.CHARACTER:
+    case ActionType.FIGURE:
       return {
-        type: "character",
+        type: "figure",
         url: string(),
         identity: string(),
-        parentAnimation: string(),
-        imageAnimation: string(),
+        size: string(),
+        position: string(),
       };
-    case ActionType.REMOVE_CHARACTER:
-      return {
-        type: "remove-character",
-        url: string(),
-        identity: string(),
-        parentAnimation: string(),
-        imageAnimation: string(),
-      };
+    case ActionType.REMOVE_FIGURE:
+      return { type: "remove-figure", identity: string() };
     case ActionType.SOUND_EFFECT:
       return { type: "sfx", url: string() };
     case ActionType.TEXT:

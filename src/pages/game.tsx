@@ -6,6 +6,7 @@ import intro from "../story/intro.md";
 import { PauseIcon } from "~/icons/pause";
 import { useEffect } from "preact/hooks";
 import { TextOutlet } from "@/preact/components/TextOutlet";
+import { FigureOutlet } from "@/preact/components/FigureOutlet";
 
 export function Game() {
   const story = useMarkdownStory();
@@ -19,6 +20,7 @@ export function Game() {
   return (
     <div class="game" onClick={() => story.click()}>
       <BackgroundOutlet />
+      <FigureOutlet />
 
       <div
         class="console"
