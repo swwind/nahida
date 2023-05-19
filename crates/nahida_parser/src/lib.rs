@@ -1,4 +1,4 @@
-use std::{fmt::Display, path::PathBuf};
+use std::{fs, path::PathBuf};
 
 use image::Tokenizer;
 use markdown::{
@@ -6,21 +6,30 @@ use markdown::{
   unist::Position,
 };
 use nahida_core::story::{Story, StoryAction, StoryStep};
+use thiserror::Error;
 
 mod image;
 
-#[derive(Debug)]
-enum ParseErrorType {
+#[derive(Debug, Error)]
+pub enum ParseErrorType {
+  #[error("failed to parse markdown: {0}")]
   MdastError(String),
+  #[error("unknown markdown node: {0}")]
   UnknownNode(String),
+  #[error("invalid heading")]
   InvalidHeading,
+  #[error("invalid link")]
   InvalidLink,
+  #[error("invalid image type: {0}")]
   InvalidImageType(String),
-  InvalidImageAlt,
-  InvalidImageFigureName,
+  #[error("image should have an alt")]
+  NoImageAlt,
+  #[error("figure shoud have a name")]
+  NoFigureName,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
+#[error("parse error: {ty} at {position:?}")]
 pub struct ParseError {
   ty: ParseErrorType,
   position: Option<Position>,
@@ -36,35 +45,45 @@ impl ParseError {
   }
 }
 
-impl Display for ParseError {
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    write!(f, "ParseError: {:?} at {:?}", self.ty, self.position)
-  }
+pub struct NahidaParser {
+  base: PathBuf,
 }
-
-pub struct NahidaParser;
 
 type Result<T> = std::result::Result<T, ParseError>;
 
 impl NahidaParser {
-  pub fn parse(text: &str) -> Result<Story> {
+  pub fn parse_from_text(text: &str) -> Result<Story> {
+    NahidaParser {
+      base: PathBuf::default(),
+    }
+    .parse_text(text)
+  }
+
+  pub fn parse_from_file(file: PathBuf) -> Result<Story> {
+    let text = fs::read_to_string(file.clone()).unwrap();
+    NahidaParser { base: file }.parse_text(&text)
+  }
+}
+
+impl NahidaParser {
+  fn parse_text(&self, text: &str) -> Result<Story> {
     match markdown::to_mdast(text, &markdown::ParseOptions::default())
       .map_err(|x| ParseError::new(ParseErrorType::MdastError(x)))?
     {
-      Node::Root(root) => Ok(Self::parse_root(&root)?),
+      Node::Root(root) => Ok(self.parse_root(&root)?),
       _ => unreachable!(),
     }
   }
 
-  fn parse_root(root: &Root) -> Result<Story> {
+  fn parse_root(&self, root: &Root) -> Result<Story> {
     let mut story = Story { steps: Vec::new() };
     let mut name = None;
 
     for child in &root.children {
       match child {
-        Node::Heading(heading) => name = Some(Self::parse_heading(heading)?),
+        Node::Heading(heading) => name = Some(self.parse_heading(heading)?),
         Node::ThematicBreak(_) => name = None,
-        Node::Paragraph(paragraph) => story.steps.push(Self::parse_paragraph(paragraph, &name)?),
+        Node::Paragraph(paragraph) => story.steps.push(self.parse_paragraph(paragraph, &name)?),
         node => Err(ParseError::new_with_position(
           ParseErrorType::UnknownNode(format!("{node:?}")),
           node.position().cloned(),
@@ -75,7 +94,7 @@ impl NahidaParser {
     Ok(story)
   }
 
-  fn parse_heading(heading: &Heading) -> Result<String> {
+  fn parse_heading(&self, heading: &Heading) -> Result<String> {
     match &heading.children[..] {
       [Node::Text(Text { value, .. })] => Ok(value.clone()),
       _ => Err(ParseError::new_with_position(
@@ -85,7 +104,7 @@ impl NahidaParser {
     }
   }
 
-  fn parse_paragraph(paragraph: &Paragraph, name: &Option<String>) -> Result<StoryStep> {
+  fn parse_paragraph(&self, paragraph: &Paragraph, name: &Option<String>) -> Result<StoryStep> {
     let mut step = StoryStep {
       actions: Vec::new(),
     };
@@ -100,11 +119,11 @@ impl NahidaParser {
           step.actions.push(action);
         }
         Node::Link(link) => {
-          let action = Self::parse_link(link)?;
+          let action = self.parse_link(link)?;
           step.actions.push(action);
         }
         Node::Image(image) => {
-          let action = Self::parse_image(image)?;
+          let action = self.parse_image(image)?;
           step.actions.push(action);
         }
         _ => todo!(),
@@ -114,7 +133,7 @@ impl NahidaParser {
     Ok(step)
   }
 
-  fn parse_link(link: &Link) -> Result<StoryAction> {
+  fn parse_link(&self, link: &Link) -> Result<StoryAction> {
     let text = match &link.children[..] {
       [Node::Text(Text { value, .. })] => value.clone(),
       _ => Err(ParseError::new_with_position(
@@ -135,11 +154,11 @@ impl NahidaParser {
     }
   }
 
-  fn parse_image(image: &Image) -> Result<StoryAction> {
+  fn parse_image(&self, image: &Image) -> Result<StoryAction> {
     let mut alt = Tokenizer::new(&image.alt);
     let title = image.title.clone().unwrap_or_default();
     let mut title = Tokenizer::new(&title);
-    let url = image.url.clone();
+    let url = self.base.join(&image.url);
 
     match alt.next() {
       Some("bg") => {
@@ -162,10 +181,7 @@ impl NahidaParser {
 
         let transition = alt.parse_transition();
         let name = title.parse_name().ok_or_else(|| {
-          ParseError::new_with_position(
-            ParseErrorType::InvalidImageFigureName,
-            image.position.clone(),
-          )
+          ParseError::new_with_position(ParseErrorType::NoFigureName, image.position.clone())
         })?;
         let location = title.parse_location();
         let animation = title.parse_animation();
@@ -183,7 +199,7 @@ impl NahidaParser {
         image.position.clone(),
       )),
       None => Err(ParseError::new_with_position(
-        ParseErrorType::InvalidImageAlt,
+        ParseErrorType::NoImageAlt,
         image.position.clone(),
       )),
     }
@@ -192,10 +208,16 @@ impl NahidaParser {
 
 #[cfg(test)]
 mod tests {
-  use crate::NahidaParser;
+  use crate::{NahidaParser, ParseError, ParseErrorType};
 
   #[test]
   fn test_parser() {
-    NahidaParser::parse(r#"[x](./haid.md "title")"#).unwrap();
+    assert!(matches!(
+      NahidaParser::parse_from_text(r#"[x](./haid.md "title")"#),
+      Err(ParseError {
+        ty: ParseErrorType::InvalidLink,
+        ..
+      }),
+    ));
   }
 }

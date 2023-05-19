@@ -10,3 +10,4 @@ anyhow = "1.0.71"
 log = "0.4.17"
 markdown = "1.0.0-alpha.9"
 nahida_core = {path = "../nahida_core"}
+thiserror = "1.0.40"
