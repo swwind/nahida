@@ -45,41 +45,7 @@
 
 当需要对人物立绘进行更新的时候，只需要给予相同的人物名称即可。
 
-示例：
-
-- 放一张纳西妲的立绘，缩放 30%，位于左起 20%，上起 40% 的位置。
-
-  ```markdown
-  ![fig](./figure/nahida-stand.png "nahida 30% / 20% 40%")
-  ```
-
-- 放一张纳西妲的立绘，缩放以不超出屏幕范围，位于画面的正中央
-
-  ```markdown
-  ![fig](./figure/nahida-stand.png "nahida / contain")
-  ```
-
-- 放一张纳西妲的立绘，并在 3 秒钟之后移动到画面左侧
-
-  ```markdown
-  ![fig](./figure/nahida-stand.png "nahida / contain")
-  ![console](#wait "3000")
-  ![fig](./figure/nahida-stand.png "nahida left / contain")
-  ```
-
-当需要移除立绘的时候，使用 `![fig remove](...)` 操作。
-
-示例：
-
-- 淡入纳西妲的立绘，随后移除
-
-  ```markdown
-  ![fig fade-in][nahida]
-
-  ![fig fade-out remove][nahida]
-
-  [nahida]: ./figure/nahida-stand.png "nahida"
-  ```
+当需要移除立绘的时候，使用 `![fig remove ...](...)` 操作。
 
 ## 背景音乐
 
@@ -96,7 +62,7 @@
 - 原地等待若干时间（毫秒）
 
   ```markdown
-  ![console](#wait "2000")
+  [wait](#2000)
   ```
 
 ## 流程控制
