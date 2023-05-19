@@ -2,45 +2,46 @@ use std::{path::PathBuf, time::Duration};
 
 use crate::{easing::EasingFunction, location::Location};
 
-pub enum StoryAction {
-  /// do nothing and wait for ms time
-  Wait {
-    time: Duration,
-  },
-
-  Actions {
-    actions: Vec<Action>,
-  },
+pub struct StoryStep {
+  pub actions: Vec<StoryAction>,
 }
 
-pub enum Action {
-  Text {
-    name: Option<String>,
-    text: String,
-  },
+pub struct Story {
+  pub steps: Vec<StoryStep>,
+}
 
+pub enum StoryAction {
+  /// do nothing
+  Wait { time: Duration },
+
+  /// showing a text
+  Text { name: Option<String>, text: String },
+
+  /// changing the background
   Bg {
     url: PathBuf,
-    transition: Transition,
-    animation: Animation,
+    transition: Option<Transition>,
+    animation: Option<Animation>,
     location: Location,
   },
 
+  /// chaning the figure
   Fig {
     name: String,
     url: PathBuf,
-    transition: Transition,
-    animation: Animation,
+    transition: Option<Transition>,
+    animation: Option<Animation>,
     location: Location,
   },
 
-  Bgm {
-    url: PathBuf,
-  },
+  /// changing the BGM
+  Bgm { url: PathBuf },
 
-  Sfx {
-    url: PathBuf,
-  },
+  /// playing some sfx
+  Sfx { url: PathBuf },
+
+  /// control flow
+  Navigate { url: PathBuf, ret: bool },
 }
 
 pub enum TransitionType {

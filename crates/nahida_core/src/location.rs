@@ -1,22 +1,28 @@
+#[derive(Debug, Clone, Default)]
 pub struct Position {
   pub x: PositionX,
   pub y: PositionY,
 }
 
+#[derive(Debug, Clone, Default)]
 pub enum PositionX {
   Left,
+  #[default]
   Center,
   Right,
   Percent(f32),
 }
 
+#[derive(Debug, Clone, Default)]
 pub enum PositionY {
   Top,
+  #[default]
   Center,
   Bottom,
   Percent(f32),
 }
 
+#[derive(Debug, Clone)]
 pub enum Size {
   Cover,
   Contain,
@@ -24,21 +30,36 @@ pub enum Size {
   Xy { x: SizeX, y: SizeY },
 }
 
+impl Default for Size {
+  fn default() -> Self {
+    Self::Xy {
+      x: Default::default(),
+      y: Default::default(),
+    }
+  }
+}
+
+#[derive(Debug, Clone, Default)]
 pub enum SizeX {
+  #[default]
   Auto,
   Percent(f32),
 }
 
+#[derive(Debug, Clone, Default)]
 pub enum SizeY {
+  #[default]
   Auto,
   Percent(f32),
 }
 
+#[derive(Debug, Clone, Default)]
 pub struct Location {
   pub position: Position,
   pub size: Size,
 }
 
+#[derive(Debug, Clone)]
 pub struct Rect {
   pub left: f32,
   pub top: f32,
@@ -57,7 +78,7 @@ impl Location {
       Size::Contain => (one.min(1.0 * aspect), one.min(1.0 / aspect)),
       Size::Fill => (1.0, 1.0),
       Size::Xy { x, y } => match (x, y) {
-        (SizeX::Auto, SizeY::Auto) => (1.0, 1.0),
+        (SizeX::Auto, SizeY::Auto) => todo!(),
         (SizeX::Auto, SizeY::Percent(py)) => (py * aspect, *py),
         (SizeX::Percent(px), SizeY::Auto) => (*px, px / aspect),
         (SizeX::Percent(px), SizeY::Percent(py)) => (*px, *py),
