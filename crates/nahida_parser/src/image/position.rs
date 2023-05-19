@@ -55,20 +55,33 @@ pub fn parse_position(input: &[&str]) -> Option<Position> {
 
       match (t1, t2) {
         (Left, Top) => Some(Position(0.0, 0.0)),
+        (Top, Left) => Some(Position(0.0, 0.0)),
+        (Left, Center) => Some(Position(0.0, 0.5)),
+        (Center, Left) => Some(Position(0.0, 0.5)),
         (Left, Bottom) => Some(Position(0.0, 1.0)),
-        (Left, Percent(y)) => Some(Position(0.0, y)),
+        (Bottom, Left) => Some(Position(0.0, 1.0)),
 
         (Right, Top) => Some(Position(1.0, 0.0)),
-        (Right, Bottom) => Some(Position(1.0, 1.0)),
-        (Right, Percent(y)) => Some(Position(1.0, y)),
-
-        (Top, Left) => Some(Position(0.0, 0.0)),
         (Top, Right) => Some(Position(1.0, 0.0)),
-        (Bottom, Left) => Some(Position(0.0, 1.0)),
+        (Right, Center) => Some(Position(1.0, 0.5)),
+        (Center, Right) => Some(Position(1.0, 0.5)),
+        (Right, Bottom) => Some(Position(1.0, 1.0)),
         (Bottom, Right) => Some(Position(1.0, 1.0)),
 
+        (Top, Center) => Some(Position(0.5, 0.0)),
+        (Center, Top) => Some(Position(0.5, 0.0)),
+        (Center, Center) => Some(Position(0.5, 0.5)),
+        (Bottom, Center) => Some(Position(0.5, 1.0)),
+        (Center, Bottom) => Some(Position(0.5, 1.0)),
+
+        (Left, Percent(y)) => Some(Position(0.0, y)),
+        (Center, Percent(y)) => Some(Position(0.5, y)),
+        (Right, Percent(y)) => Some(Position(1.0, y)),
+
         (Percent(x), Top) => Some(Position(x, 0.0)),
+        (Percent(x), Center) => Some(Position(x, 0.5)),
         (Percent(x), Bottom) => Some(Position(x, 1.0)),
+
         (Percent(x), Percent(y)) => Some(Position(x, y)),
 
         _ => None,
@@ -83,25 +96,37 @@ pub fn parse_position(input: &[&str]) -> Option<Position> {
       );
 
       match (t1, t2, t3) {
-        (Left, Top, Percent(y)) => Some(Position(0.0, y)),
-        (Left, Bottom, Percent(y)) => Some(Position(0.0, 1.0 - y)),
         (Left, Percent(x), Top) => Some(Position(x, 0.0)),
+        (Left, Percent(x), Center) => Some(Position(x, 0.5)),
         (Left, Percent(x), Bottom) => Some(Position(x, 1.0)),
 
-        (Right, Top, Percent(y)) => Some(Position(1.0, y)),
-        (Right, Bottom, Percent(y)) => Some(Position(1.0, 1.0 - y)),
         (Right, Percent(x), Top) => Some(Position(1.0 - x, 0.0)),
+        (Right, Percent(x), Center) => Some(Position(1.0 - x, 0.5)),
         (Right, Percent(x), Bottom) => Some(Position(1.0 - x, 1.0)),
 
-        (Top, Left, Percent(x)) => Some(Position(x, 0.0)),
-        (Top, Right, Percent(x)) => Some(Position(1.0 - x, 0.0)),
         (Top, Percent(y), Left) => Some(Position(0.0, y)),
+        (Top, Percent(y), Center) => Some(Position(0.5, y)),
         (Top, Percent(y), Right) => Some(Position(1.0, y)),
 
-        (Bottom, Left, Percent(x)) => Some(Position(x, 1.0)),
-        (Bottom, Right, Percent(x)) => Some(Position(1.0 - x, 1.0)),
         (Bottom, Percent(y), Left) => Some(Position(0.0, 1.0 - y)),
+        (Bottom, Percent(y), Center) => Some(Position(0.5, 1.0 - y)),
         (Bottom, Percent(y), Right) => Some(Position(1.0, 1.0 - y)),
+
+        (Top, Left, Percent(x)) => Some(Position(x, 0.0)),
+        (Center, Left, Percent(x)) => Some(Position(x, 0.5)),
+        (Bottom, Left, Percent(x)) => Some(Position(x, 1.0)),
+
+        (Top, Right, Percent(x)) => Some(Position(1.0 - x, 0.0)),
+        (Center, Right, Percent(x)) => Some(Position(1.0 - x, 0.5)),
+        (Bottom, Right, Percent(x)) => Some(Position(1.0 - x, 1.0)),
+
+        (Left, Top, Percent(y)) => Some(Position(0.0, y)),
+        (Center, Top, Percent(y)) => Some(Position(0.5, y)),
+        (Right, Top, Percent(y)) => Some(Position(1.0, y)),
+
+        (Left, Bottom, Percent(y)) => Some(Position(0.0, 1.0 - y)),
+        (Center, Bottom, Percent(y)) => Some(Position(0.5, 1.0 - y)),
+        (Right, Bottom, Percent(y)) => Some(Position(1.0, 1.0 - y)),
 
         _ => None,
       }
@@ -117,12 +142,15 @@ pub fn parse_position(input: &[&str]) -> Option<Position> {
 
       match (t1, t2, t3, t4) {
         (Left, Percent(x), Top, Percent(y)) => Some(Position(x, y)),
-        (Left, Percent(x), Bottom, Percent(y)) => Some(Position(x, 1.0 - y)),
-        (Right, Percent(x), Top, Percent(y)) => Some(Position(1.0 - x, y)),
-        (Right, Percent(x), Bottom, Percent(y)) => Some(Position(1.0 - x, 1.0 - y)),
         (Top, Percent(y), Left, Percent(x)) => Some(Position(x, y)),
-        (Top, Percent(y), Right, Percent(x)) => Some(Position(1.0 - x, y)),
+
+        (Left, Percent(x), Bottom, Percent(y)) => Some(Position(x, 1.0 - y)),
         (Bottom, Percent(y), Left, Percent(x)) => Some(Position(x, 1.0 - y)),
+
+        (Right, Percent(x), Top, Percent(y)) => Some(Position(1.0 - x, y)),
+        (Top, Percent(y), Right, Percent(x)) => Some(Position(1.0 - x, y)),
+
+        (Right, Percent(x), Bottom, Percent(y)) => Some(Position(1.0 - x, 1.0 - y)),
         (Bottom, Percent(y), Right, Percent(x)) => Some(Position(1.0 - x, 1.0 - y)),
 
         _ => None,
