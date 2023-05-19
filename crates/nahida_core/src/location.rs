@@ -1,56 +1,15 @@
-#[derive(Debug, Clone, Default)]
-pub struct Position {
-  pub x: PositionX,
-  pub y: PositionY,
-}
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct Position(pub f32, pub f32);
 
-#[derive(Debug, Clone, Default)]
-pub enum PositionX {
-  Left,
-  #[default]
-  Center,
-  Right,
-  Percent(f32),
-}
-
-#[derive(Debug, Clone, Default)]
-pub enum PositionY {
-  Top,
-  #[default]
-  Center,
-  Bottom,
-  Percent(f32),
-}
-
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub enum Size {
   Cover,
+  #[default]
   Contain,
   Fill,
-  Xy { x: SizeX, y: SizeY },
-}
-
-impl Default for Size {
-  fn default() -> Self {
-    Self::Xy {
-      x: Default::default(),
-      y: Default::default(),
-    }
-  }
-}
-
-#[derive(Debug, Clone, Default)]
-pub enum SizeX {
-  #[default]
-  Auto,
-  Percent(f32),
-}
-
-#[derive(Debug, Clone, Default)]
-pub enum SizeY {
-  #[default]
-  Auto,
-  Percent(f32),
+  FixedWidth(f32),
+  FixedHeight(f32),
+  Fixed(f32, f32),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -77,31 +36,14 @@ impl Location {
       Size::Cover => (one.max(1.0 * aspect), one.max(1.0 / aspect)),
       Size::Contain => (one.min(1.0 * aspect), one.min(1.0 / aspect)),
       Size::Fill => (1.0, 1.0),
-      Size::Xy { x, y } => match (x, y) {
-        (SizeX::Auto, SizeY::Auto) => todo!(),
-        (SizeX::Auto, SizeY::Percent(py)) => (py * aspect, *py),
-        (SizeX::Percent(px), SizeY::Auto) => (*px, px / aspect),
-        (SizeX::Percent(px), SizeY::Percent(py)) => (*px, *py),
-      },
+      Size::FixedWidth(w) => (*w, w / aspect),
+      Size::FixedHeight(h) => (h * aspect, *h),
+      Size::Fixed(w, h) => (*w, *h),
     };
 
-    let x = match &self.position.x {
-      PositionX::Left => 0.0,
-      PositionX::Center => 0.5,
-      PositionX::Right => 1.0,
-      PositionX::Percent(x) => *x,
-    };
-
-    let y = match &self.position.y {
-      PositionY::Top => 0.0,
-      PositionY::Center => 0.5,
-      PositionY::Bottom => 1.0,
-      PositionY::Percent(y) => *y,
-    };
-
-    let left = (1.0 - width) * x;
+    let left = (1.0 - width) * self.position.0;
     let right = left + width;
-    let top = (1.0 - height) * y;
+    let top = (1.0 - height) * self.position.1;
     let bottom = top + height;
 
     Rect {
