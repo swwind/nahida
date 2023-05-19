@@ -1,6 +1,7 @@
 use nahida_core::location::Size;
 
-enum SizeParamType {
+#[derive(Debug, Clone, Copy)]
+pub enum SizeKeyword {
   Contain,
   Cover,
   Fill,
@@ -8,15 +9,15 @@ enum SizeParamType {
   Percent(f32),
 }
 
-fn check_size_param_type(param: &str) -> Option<SizeParamType> {
+pub fn parse_size_keyword(param: &str) -> Option<SizeKeyword> {
   match param {
-    "contain" => Some(SizeParamType::Contain),
-    "cover" => Some(SizeParamType::Cover),
-    "fill" => Some(SizeParamType::Fill),
-    "auto" => Some(SizeParamType::Auto),
+    "contain" => Some(SizeKeyword::Contain),
+    "cover" => Some(SizeKeyword::Cover),
+    "fill" => Some(SizeKeyword::Fill),
+    "auto" => Some(SizeKeyword::Auto),
     p if p.ends_with('%') => {
       if let Ok(percent) = p.trim_end_matches('%').parse::<f32>() {
-        Some(SizeParamType::Percent(percent / 100.0))
+        Some(SizeKeyword::Percent(percent / 100.0))
       } else {
         None
       }
@@ -26,14 +27,14 @@ fn check_size_param_type(param: &str) -> Option<SizeParamType> {
 }
 
 /// parse `<size>`
-pub fn parse_size(input: &[&str]) -> Option<Size> {
-  use SizeParamType::*;
+pub fn parse_size(input: &[SizeKeyword]) -> Option<Size> {
+  use SizeKeyword::*;
 
   match input.len() {
     0 => Some(Size::Contain),
 
     1 => {
-      let ty = check_size_param_type(&input[0])?;
+      let ty = input[0];
 
       match ty {
         Contain => Some(Size::Contain),
@@ -45,10 +46,7 @@ pub fn parse_size(input: &[&str]) -> Option<Size> {
     }
 
     2 => {
-      let (t1, t2) = (
-        check_size_param_type(&input[0])?,
-        check_size_param_type(&input[1])?,
-      );
+      let (t1, t2) = (input[0], input[1]);
 
       match (t1, t2) {
         (Auto, Auto) => Some(Size::Contain),
@@ -70,8 +68,14 @@ mod tests {
 
   use crate::image::size::parse_size;
 
+  use super::parse_size_keyword;
+
   fn parse(s: &str) -> Option<Size> {
-    parse_size(&s.split_whitespace().collect::<Vec<_>>())
+    parse_size(
+      &s.split_whitespace()
+        .map(|x| parse_size_keyword(x).unwrap())
+        .collect::<Vec<_>>(),
+    )
   }
 
   #[test]

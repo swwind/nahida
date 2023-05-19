@@ -1,6 +1,7 @@
 use nahida_core::location::Position;
 
-enum PositionParamType {
+#[derive(Debug, Clone, Copy)]
+pub enum PositionKeyword {
   Left,
   Right,
   Top,
@@ -9,16 +10,16 @@ enum PositionParamType {
   Percent(f32),
 }
 
-fn check_position_param_type(param: &str) -> Option<PositionParamType> {
+pub fn parse_position_keyword(param: &str) -> Option<PositionKeyword> {
   match param {
-    "left" => Some(PositionParamType::Left),
-    "right" => Some(PositionParamType::Right),
-    "top" => Some(PositionParamType::Top),
-    "bottom" => Some(PositionParamType::Bottom),
-    "center" => Some(PositionParamType::Center),
+    "left" => Some(PositionKeyword::Left),
+    "right" => Some(PositionKeyword::Right),
+    "top" => Some(PositionKeyword::Top),
+    "bottom" => Some(PositionKeyword::Bottom),
+    "center" => Some(PositionKeyword::Center),
     p if p.ends_with('%') => {
       if let Ok(percent) = p.trim_end_matches('%').parse::<f32>() {
-        Some(PositionParamType::Percent(percent / 100.0))
+        Some(PositionKeyword::Percent(percent / 100.0))
       } else {
         None
       }
@@ -28,14 +29,15 @@ fn check_position_param_type(param: &str) -> Option<PositionParamType> {
 }
 
 /// parse `<position>`
-pub fn parse_position(input: &[&str]) -> Option<Position> {
-  use PositionParamType::*;
+pub fn parse_position(input: &[PositionKeyword]) -> Option<Position> {
+  use PositionKeyword::*;
 
   match input.len() {
     0 => Some(Position(0.0, 0.0)),
 
     1 => {
-      let ty = check_position_param_type(&input[0])?;
+      let ty = input[0];
+
       match ty {
         Left => Some(Position(0.0, 0.5)),
         Right => Some(Position(1.0, 0.5)),
@@ -48,10 +50,7 @@ pub fn parse_position(input: &[&str]) -> Option<Position> {
     }
 
     2 => {
-      let (t1, t2) = (
-        check_position_param_type(&input[0])?,
-        check_position_param_type(&input[1])?,
-      );
+      let (t1, t2) = (input[0], input[1]);
 
       match (t1, t2) {
         (Left, Top) => Some(Position(0.0, 0.0)),
@@ -89,11 +88,7 @@ pub fn parse_position(input: &[&str]) -> Option<Position> {
     }
 
     3 => {
-      let (t1, t2, t3) = (
-        check_position_param_type(&input[0])?,
-        check_position_param_type(&input[1])?,
-        check_position_param_type(&input[2])?,
-      );
+      let (t1, t2, t3) = (input[0], input[1], input[2]);
 
       match (t1, t2, t3) {
         (Left, Percent(x), Top) => Some(Position(x, 0.0)),
@@ -133,12 +128,7 @@ pub fn parse_position(input: &[&str]) -> Option<Position> {
     }
 
     4 => {
-      let (t1, t2, t3, t4) = (
-        check_position_param_type(&input[0])?,
-        check_position_param_type(&input[1])?,
-        check_position_param_type(&input[2])?,
-        check_position_param_type(&input[3])?,
-      );
+      let (t1, t2, t3, t4) = (input[0], input[1], input[2], input[3]);
 
       match (t1, t2, t3, t4) {
         (Left, Percent(x), Top, Percent(y)) => Some(Position(x, y)),
@@ -167,8 +157,14 @@ mod tests {
 
   use crate::image::position::parse_position;
 
+  use super::parse_position_keyword;
+
   fn parse(s: &str) -> Option<Position> {
-    parse_position(&s.split_whitespace().collect::<Vec<_>>())
+    parse_position(
+      &s.split_whitespace()
+        .map(|x| parse_position_keyword(x).unwrap())
+        .collect::<Vec<_>>(),
+    )
   }
 
   #[test]
