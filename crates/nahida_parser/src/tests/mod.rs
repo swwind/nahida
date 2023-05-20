@@ -1,4 +1,4 @@
-use std::{path::PathBuf, time::Duration};
+use std::time::Duration;
 
 use nahida_core::{
   easing::EasingFunction,
@@ -26,9 +26,15 @@ macro_rules! steps {
   );
 }
 
+macro_rules! url {
+  ($url:expr) => {
+    url::Url::parse($url).unwrap()
+  };
+}
+
 #[test]
 fn test_basic() {
-  let story = Ok(story![
+  let story = story![
     steps![StoryAction::Text {
       name: Some("纳西妲".to_string()),
       text: "「你好呀」".to_string()
@@ -49,25 +55,25 @@ fn test_basic() {
       name: None,
       text: "定睛一看，才发现是个少女".to_string()
     }],
-  ]);
+  ];
 
   assert_eq!(
-    NahidaParser::parse_from_text(include_str!("basic.md")),
+    NahidaParser::parse_from_text(include_str!("basic.md")).unwrap(),
     story
   );
 }
 
 #[test]
 fn test_background() {
-  let story = Ok(story![
+  let story = story![
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: None,
       animation: None,
       location: Location::default(),
     }],
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: None,
       animation: None,
       location: Location {
@@ -76,7 +82,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: None,
       animation: None,
       location: Location {
@@ -85,7 +91,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: None,
       animation: None,
       location: Location {
@@ -94,7 +100,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: None,
       animation: Some(Animation {
         ty: AnimationType::To {
@@ -112,7 +118,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: None,
       animation: Some(Animation {
         ty: AnimationType::To {
@@ -130,7 +136,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: Some(Transition {
         ty: TransitionType::FadeIn,
         time: Duration::from_secs(1),
@@ -140,7 +146,7 @@ fn test_background() {
       location: Location::default()
     }],
     steps![StoryAction::Bg {
-      url: PathBuf::from("/background.png"),
+      url: url!("file:///background.png"),
       transition: Some(Transition {
         ty: TransitionType::FadeOut,
         time: Duration::from_secs(5),
@@ -149,7 +155,65 @@ fn test_background() {
       animation: None,
       location: Location::default()
     }]
-  ]);
+  ];
 
-  assert_eq!(NahidaParser::parse_from_text(include_str!("bg.md")), story);
+  assert_eq!(
+    NahidaParser::parse_from_text(include_str!("bg.md")).unwrap(),
+    story
+  );
+}
+
+#[test]
+fn test_figure() {
+  let story = story![
+    steps![StoryAction::Fig {
+      name: "nahida".to_string(),
+      url: url!("file:///figure.png"),
+      transition: None,
+      animation: None,
+      location: Location::default(),
+      removal: false,
+    }],
+    steps![StoryAction::Fig {
+      name: "nahida".to_string(),
+      url: url!("file:///figure.png"),
+      transition: Some(Transition {
+        ty: TransitionType::FadeIn,
+        time: Duration::from_secs(4),
+        easing: EasingFunction::ease_out()
+      }),
+      animation: Some(Animation {
+        ty: AnimationType::To {
+          location: Location {
+            position: Position(0.2, 0.0),
+            size: Size::FixedHeight(0.3)
+          }
+        },
+        time: Duration::from_secs(20),
+        easing: EasingFunction::ease_in_out()
+      }),
+      location: Location {
+        position: Position(0.7, 1.0),
+        size: Size::Fixed(0.3, 0.2)
+      },
+      removal: false,
+    }],
+    steps![StoryAction::Fig {
+      name: "nahida".to_string(),
+      url: url!("file:///figure.png"),
+      transition: Some(Transition {
+        ty: TransitionType::ConicOut,
+        time: Duration::from_secs(4),
+        easing: EasingFunction::Linear
+      }),
+      animation: None,
+      location: Location::default(),
+      removal: true,
+    }]
+  ];
+
+  assert_eq!(
+    NahidaParser::parse_from_text(include_str!("fig.md")).unwrap(),
+    story
+  );
 }

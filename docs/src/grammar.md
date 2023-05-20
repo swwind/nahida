@@ -32,20 +32,20 @@
 
 若要添加/更换背景，可以使用 `![bg <transition>](url "<position> / <size> <animation>")` 的格式进行声明。
 
-- 关于位置 `<position>` 和大小 `<size>` 的有关内容，请参考[大小与位置](./sizes.md)章节。
-- 关于转场动画 `<transition>` 和图片动画 `<animation>` 的有关内容，请参考[转场与动画](./animations.md)章节。
+- 关于位置 `<position>` 和大小 `<size>` 的有关内容，请参考[大小与位置](./location.md)章节。
+- 关于转场 `<transition>` 和动画 `<animation>` 的有关内容，请参考[转场与动画](./animations.md)章节。
 
 ## 人物立绘
 
 人物立绘使用 `![fig <transition>](url "<name> <position> / <size> <animation>")` 的方式来进行初始化声明。
 
 - `<name>` 用于唯一确定立绘的人物名称，以便后续操作的时候方便区分目标。
-- 关于位置 `<position>` 和大小 `<size>` 的有关内容，请参考[大小与位置](./sizes.md)章节。
-- 关于转场动画 `<transition>` 和动画 `<animation>` 的有关内容，请参考[转场与动画](./animations.md)章节。
+- 关于位置 `<position>` 和大小 `<size>` 的有关内容，请参考[大小与位置](./location.md)章节。
+- 关于转场 `<transition>` 和动画 `<animation>` 的有关内容，请参考[转场与动画](./animations.md)章节。
 
-当需要对人物立绘进行更新的时候，只需要给予相同的人物名称即可。
+注意：人物名称是必选项，其他都是可选。当需要对人物立绘进行更新的时候，只需要给予相同的人物名称即可。
 
-当需要移除立绘的时候，使用 `![fig remove ...](...)` 操作。
+当需要移除立绘的时候，使用 `![fig remove ...](...)` 操作，引擎会在动画完成之后移除相应的动画对象。
 
 ## 背景音乐
 
@@ -78,7 +78,7 @@
 - 跳转到其他剧情文件并结束游戏
 
   ```markdown
-  [goto end](./xxx.md)
+  [end](./xxx.md)
   ```
 
 ## 分支选项

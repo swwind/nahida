@@ -23,9 +23,9 @@ impl<'a> Tokenizer<'a> {
     }
   }
 
-  pub fn peek(&mut self) -> Option<&&'a str> {
-    self.token.peek()
-  }
+  // pub fn peek(&mut self) -> Option<&&'a str> {
+  //   self.token.peek()
+  // }
 
   pub fn next(&mut self) -> Option<&'a str> {
     self.token.next()

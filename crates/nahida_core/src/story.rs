@@ -1,4 +1,6 @@
-use std::{path::PathBuf, time::Duration};
+use std::time::Duration;
+
+use url::Url;
 
 use crate::{easing::EasingFunction, location::Location};
 
@@ -22,7 +24,7 @@ pub enum StoryAction {
 
   /// changing the background
   Bg {
-    url: PathBuf,
+    url: Url,
     transition: Option<Transition>,
     animation: Option<Animation>,
     location: Location,
@@ -31,7 +33,7 @@ pub enum StoryAction {
   /// chaning the figure
   Fig {
     name: String,
-    url: PathBuf,
+    url: Url,
     transition: Option<Transition>,
     animation: Option<Animation>,
     location: Location,
@@ -39,13 +41,13 @@ pub enum StoryAction {
   },
 
   /// changing the BGM
-  Bgm { url: PathBuf },
+  Bgm { url: Url },
 
   /// playing some sfx
-  Sfx { url: PathBuf },
+  Sfx { url: Url },
 
   /// control flow
-  Navigate { url: PathBuf, ret: bool },
+  Navigate { url: Url, ret: bool },
 }
 
 #[derive(Debug, PartialEq)]

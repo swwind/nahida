@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf, time::Duration};
+use std::{fs, io, path::PathBuf, time::Duration};
 
 use image::Tokenizer;
 use markdown::{
@@ -7,10 +7,11 @@ use markdown::{
 };
 use nahida_core::story::{Story, StoryAction, StoryStep};
 use thiserror::Error;
+use url::Url;
 
 mod image;
 
-#[derive(Debug, Error, PartialEq, Eq)]
+#[derive(Debug, Error)]
 pub enum ParseErrorType {
   #[error("failed to parse markdown: {0}")]
   MdastError(String),
@@ -20,17 +21,17 @@ pub enum ParseErrorType {
   InvalidHeading,
   #[error("invalid link")]
   InvalidLink,
-  #[error("invalid image type: {0}")]
-  InvalidImageType(String),
-  #[error("image should have an alt")]
-  NoImageAlt,
+  #[error("invalid image")]
+  InvalidImage,
   #[error("figure shoud have a name")]
   NoFigureName,
   #[error("invalid wait time: {0}")]
   InvalidWaitTime(String),
+  #[error("invalid url: {0}")]
+  InvalidUrl(String),
 }
 
-#[derive(Debug, Error, PartialEq, Eq)]
+#[derive(Debug, Error)]
 #[error("parse error: {ty} at {position:?}")]
 pub struct ParseError {
   ty: ParseErrorType,
@@ -48,7 +49,7 @@ impl ParseError {
 }
 
 pub struct NahidaParser {
-  base: PathBuf,
+  source: Url,
 }
 
 type Result<T> = std::result::Result<T, ParseError>;
@@ -56,14 +57,17 @@ type Result<T> = std::result::Result<T, ParseError>;
 impl NahidaParser {
   pub fn parse_from_text(text: &str) -> Result<Story> {
     NahidaParser {
-      base: PathBuf::from("/"),
+      source: Url::parse("/index.md").unwrap(),
     }
     .parse_text(text)
   }
 
   pub fn parse_from_file(file: PathBuf) -> Result<Story> {
     let text = fs::read_to_string(&file).unwrap();
-    NahidaParser { base: file }.parse_text(&text)
+    NahidaParser {
+      source: Url::parse(&format!("file://{}", file.to_string_lossy())).unwrap(),
+    }
+    .parse_text(&text)
   }
 }
 
@@ -135,6 +139,30 @@ impl NahidaParser {
     Ok(step)
   }
 
+  fn parse_url(&self, url: &str) -> std::result::Result<Url, url::ParseError> {
+    // let mut base = self.base.clone();
+    // let mut target = url;
+
+    // loop {
+    //   if target.starts_with("./") {
+    //     target = &target[2..];
+    //     continue;
+    //   }
+    //   if target.starts_with("../") {
+    //     target = &target[3..];
+    //     base = match base.parent() {
+    //       Some(parent) => PathBuf::from(parent),
+    //       None => base,
+    //     };
+    //     continue;
+    //   }
+    //   break;
+    // }
+
+    // Ok(base.join(target))
+    self.source.join(&url)
+  }
+
   fn parse_link(&self, link: &Link) -> Result<StoryAction> {
     let text = match &link.children[..] {
       [Node::Text(Text { value, .. })] => value.clone(),
@@ -147,8 +175,12 @@ impl NahidaParser {
 
     match text.next() {
       Some("goto") => Ok(StoryAction::Navigate {
-        url: self.base.join(&link.url),
-        ret: !matches!(text.next(), Some("end")),
+        url: self.parse_url(&link.url).unwrap(),
+        ret: false,
+      }),
+      Some("end") => Ok(StoryAction::Navigate {
+        url: self.parse_url(&link.url).unwrap(),
+        ret: true,
       }),
       Some("wait") => Ok(StoryAction::Wait {
         time: Duration::from_millis(link.url.trim_start_matches('#').parse().map_err(|_| {
@@ -169,16 +201,22 @@ impl NahidaParser {
     let mut alt = Tokenizer::new(&image.alt);
     let title = image.title.clone().unwrap_or_default();
     let mut title = Tokenizer::new(&title);
+    let url = self.parse_url(&image.url).map_err(|_| {
+      ParseError::new_with_position(
+        ParseErrorType::InvalidUrl(image.url.clone()),
+        image.position.clone(),
+      )
+    })?;
 
     match alt.next() {
       Some("bg") => Ok(StoryAction::Bg {
-        url: self.base.join(&image.url),
+        url,
         transition: alt.parse_transition(),
         location: title.parse_location(),
         animation: title.parse_animation(),
       }),
       Some("fig") => Ok(StoryAction::Fig {
-        url: self.base.join(&image.url),
+        url,
         removal: alt.parse_remove(),
         transition: alt.parse_transition(),
         name: title.parse_name().ok_or_else(|| {
@@ -187,18 +225,10 @@ impl NahidaParser {
         location: title.parse_location(),
         animation: title.parse_animation(),
       }),
-      Some("bgm") => Ok(StoryAction::Bgm {
-        url: self.base.join(&image.url),
-      }),
-      Some("sfx") => Ok(StoryAction::Sfx {
-        url: self.base.join(&image.url),
-      }),
-      Some(ty) => Err(ParseError::new_with_position(
-        ParseErrorType::InvalidImageType(format!("{ty}")),
-        image.position.clone(),
-      )),
-      None => Err(ParseError::new_with_position(
-        ParseErrorType::NoImageAlt,
+      Some("bgm") => Ok(StoryAction::Bgm { url }),
+      Some("sfx") => Ok(StoryAction::Sfx { url }),
+      _ => Err(ParseError::new_with_position(
+        ParseErrorType::InvalidImage,
         image.position.clone(),
       )),
     }
