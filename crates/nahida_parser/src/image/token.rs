@@ -131,19 +131,4 @@ impl<'a> Tokenizer<'a> {
     }
     remove
   }
-
-  // /// parse `<location> [ <animation> ]`
-  // pub fn parse_location_animation(&mut self) -> Option<(Location, Option<Animation>)> {
-  //   let location = self.parse_location();
-  //   let animation = self.parse_animation();
-  //   Some((location, animation))
-  // }
-
-  // /// parse `<name> <location> [ <animation> ]`
-  // pub fn parse_name_location_animation(&mut self) -> Option<(String, Location, Option<Animation>)> {
-  //   let name = self.token.next().and_then(|x| Some(x.to_string()))?;
-  //   let location = self.parse_location();
-  //   let animation = self.parse_animation();
-  //   Some((name, location, animation))
-  // }
 }

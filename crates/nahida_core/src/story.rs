@@ -2,14 +2,17 @@ use std::{path::PathBuf, time::Duration};
 
 use crate::{easing::EasingFunction, location::Location};
 
+#[derive(Debug, PartialEq)]
 pub struct StoryStep {
   pub actions: Vec<StoryAction>,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Story {
   pub steps: Vec<StoryStep>,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum StoryAction {
   /// do nothing
   Wait { time: Duration },
@@ -45,6 +48,7 @@ pub enum StoryAction {
   Navigate { url: PathBuf, ret: bool },
 }
 
+#[derive(Debug, PartialEq)]
 pub enum TransitionType {
   FadeIn,
   FadeOut,
@@ -55,17 +59,20 @@ pub enum TransitionType {
   Shake,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Transition {
   pub ty: TransitionType,
   pub time: Duration,
   pub easing: EasingFunction,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum AnimationType {
   To { location: Location },
   Shake,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Animation {
   pub ty: AnimationType,
   pub time: Duration,

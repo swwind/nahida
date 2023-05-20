@@ -1,4 +1,6 @@
-#[derive(Debug)]
+use crate::math;
+
+#[derive(Debug, PartialEq)]
 pub enum EasingFunction {
   Linear,
 
@@ -69,7 +71,7 @@ impl EasingFunction {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct CubicBezier {
   ax: f32,
   bx: f32,
@@ -81,8 +83,6 @@ pub struct CubicBezier {
 }
 
 impl CubicBezier {
-  const EPSILON: f32 = 1e-6;
-
   fn new(x1: f32, y1: f32, x2: f32, y2: f32) -> Self {
     let cx = 3.0 * x1;
     let bx = 3.0 * (x2 - x1) - cx; /* -6 * x1 + 3 * x2 */
@@ -102,59 +102,18 @@ impl CubicBezier {
     }
   }
 
-  /// get x (t)
-  fn sample_x(&self, t: f32) -> f32 {
-    ((self.ax * t + self.bx) * t + self.cx) * t
-  }
+  // /// get x (t)
+  // fn sample_x(&self, t: f32) -> f32 {
+  //   ((self.ax * t + self.bx) * t + self.cx) * t
+  // }
 
   /// get y (t)
   fn sample_y(&self, t: f32) -> f32 {
     ((self.ay * t + self.by) * t + self.cy) * t
   }
 
-  /// get dx / dt (t)
-  fn sample_dx(&self, t: f32) -> f32 {
-    (3.0 * self.ax * t + 2.0 * self.bx) * t + self.cx
-  }
-
-  /// get dy / dt (t)
-  fn sample_dy(&self, t: f32) -> f32 {
-    (3.0 * self.ay * t + 2.0 * self.by) * t + self.cy
-  }
-
   /// get t from x
   fn solve_x(&self, x: f32) -> f32 {
-    // try newton's method
-    let mut t2 = x;
-    for _ in 0..8 {
-      let x2 = self.sample_x(t2) - x;
-      if x2.abs() < Self::EPSILON {
-        return t2;
-      }
-      let d2 = self.sample_dx(t2);
-      if d2.abs() < Self::EPSILON {
-        break;
-      }
-      t2 = t2 - x2 / d2;
-    }
-
-    // try binary search
-    let (mut l, mut r) = (0.0, 1.0);
-    while l < r {
-      let mid = (l + r) * 0.5;
-      let x2 = self.sample_x(mid);
-      if (x2 - x).abs() < Self::EPSILON {
-        return mid;
-      }
-
-      if x2 > x {
-        l = mid;
-      } else {
-        r = mid;
-      }
-    }
-
-    // give up
-    return (l + r) * 0.5;
+    math::cubic_solve4(self.ax, self.bx, self.cx, -x)
   }
 }

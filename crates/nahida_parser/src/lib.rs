@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, time::Duration};
 
 use image::Tokenizer;
 use markdown::{
@@ -26,6 +26,8 @@ pub enum ParseErrorType {
   NoImageAlt,
   #[error("figure shoud have a name")]
   NoFigureName,
+  #[error("invalid wait time: {0}")]
+  InvalidWaitTime(String),
 }
 
 #[derive(Debug, Error, PartialEq, Eq)]
@@ -54,7 +56,7 @@ type Result<T> = std::result::Result<T, ParseError>;
 impl NahidaParser {
   pub fn parse_from_text(text: &str) -> Result<Story> {
     NahidaParser {
-      base: PathBuf::default(),
+      base: PathBuf::from("/"),
     }
     .parse_text(text)
   }
@@ -141,11 +143,20 @@ impl NahidaParser {
         link.position.clone(),
       ))?,
     };
+    let mut text = Tokenizer::new(&text);
 
-    match () {
-      _ if text.contains("goto") => Ok(StoryAction::Navigate {
-        url: PathBuf::from(link.url.clone()),
-        ret: !text.contains("end"),
+    match text.next() {
+      Some("goto") => Ok(StoryAction::Navigate {
+        url: self.base.join(&link.url),
+        ret: !matches!(text.next(), Some("end")),
+      }),
+      Some("wait") => Ok(StoryAction::Wait {
+        time: Duration::from_millis(link.url.trim_start_matches('#').parse().map_err(|_| {
+          ParseError::new_with_position(
+            ParseErrorType::InvalidWaitTime(link.url.clone()),
+            link.position.clone(),
+          )
+        })?),
       }),
       _ => Err(ParseError::new_with_position(
         ParseErrorType::InvalidLink,
@@ -160,38 +171,28 @@ impl NahidaParser {
     let mut title = Tokenizer::new(&title);
 
     match alt.next() {
-      Some("bg") => {
-        let url = self.base.join(&image.url);
-        let transition = alt.parse_transition();
-        let location = title.parse_location();
-        let animation = title.parse_animation();
-
-        Ok(StoryAction::Bg {
-          url,
-          transition,
-          animation,
-          location,
-        })
-      }
-      Some("fig") => {
-        let url = self.base.join(&image.url);
-        let removal = alt.parse_remove();
-        let transition = alt.parse_transition();
-        let name = title.parse_name().ok_or_else(|| {
+      Some("bg") => Ok(StoryAction::Bg {
+        url: self.base.join(&image.url),
+        transition: alt.parse_transition(),
+        location: title.parse_location(),
+        animation: title.parse_animation(),
+      }),
+      Some("fig") => Ok(StoryAction::Fig {
+        url: self.base.join(&image.url),
+        removal: alt.parse_remove(),
+        transition: alt.parse_transition(),
+        name: title.parse_name().ok_or_else(|| {
           ParseError::new_with_position(ParseErrorType::NoFigureName, image.position.clone())
-        })?;
-        let location = title.parse_location();
-        let animation = title.parse_animation();
-
-        Ok(StoryAction::Fig {
-          name,
-          url,
-          transition,
-          animation,
-          location,
-          removal,
-        })
-      }
+        })?,
+        location: title.parse_location(),
+        animation: title.parse_animation(),
+      }),
+      Some("bgm") => Ok(StoryAction::Bgm {
+        url: self.base.join(&image.url),
+      }),
+      Some("sfx") => Ok(StoryAction::Sfx {
+        url: self.base.join(&image.url),
+      }),
       Some(ty) => Err(ParseError::new_with_position(
         ParseErrorType::InvalidImageType(format!("{ty}")),
         image.position.clone(),
@@ -205,28 +206,4 @@ impl NahidaParser {
 }
 
 #[cfg(test)]
-mod tests {
-  use crate::{NahidaParser, ParseError, ParseErrorType};
-
-  #[test]
-  fn test_parser() {
-    macro_rules! fail_test {
-      ($text:expr, $err:ident) => {
-        assert!(matches!(
-          NahidaParser::parse_from_text($text),
-          Err(ParseError {
-            ty: ParseErrorType::$err,
-            ..
-          }),
-        ))
-      };
-    }
-
-    fail_test!(
-      r#"
-      [x](./haid.md "title")
-      "#,
-      InvalidLink
-    );
-  }
-}
+mod tests;

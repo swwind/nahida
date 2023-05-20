@@ -12,7 +12,7 @@ pub enum Size {
   Fixed(f32, f32),
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct Location {
   pub position: Position,
   pub size: Size,
