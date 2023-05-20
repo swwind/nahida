@@ -1,4 +1,4 @@
-use std::{fs, io, path::PathBuf, time::Duration};
+use std::{fs, path::PathBuf, time::Duration};
 
 use image::Tokenizer;
 use markdown::{
@@ -140,26 +140,6 @@ impl NahidaParser {
   }
 
   fn parse_url(&self, url: &str) -> std::result::Result<Url, url::ParseError> {
-    // let mut base = self.base.clone();
-    // let mut target = url;
-
-    // loop {
-    //   if target.starts_with("./") {
-    //     target = &target[2..];
-    //     continue;
-    //   }
-    //   if target.starts_with("../") {
-    //     target = &target[3..];
-    //     base = match base.parent() {
-    //       Some(parent) => PathBuf::from(parent),
-    //       None => base,
-    //     };
-    //     continue;
-    //   }
-    //   break;
-    // }
-
-    // Ok(base.join(target))
     self.source.join(&url)
   }
 
