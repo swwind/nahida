@@ -32,6 +32,7 @@ pub enum StoryAction {
     transition: Option<Transition>,
     animation: Option<Animation>,
     location: Location,
+    removal: bool,
   },
 
   /// changing the BGM

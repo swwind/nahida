@@ -10,7 +10,7 @@ use thiserror::Error;
 
 mod image;
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, PartialEq, Eq)]
 pub enum ParseErrorType {
   #[error("failed to parse markdown: {0}")]
   MdastError(String),
@@ -28,7 +28,7 @@ pub enum ParseErrorType {
   NoFigureName,
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, PartialEq, Eq)]
 #[error("parse error: {ty} at {position:?}")]
 pub struct ParseError {
   ty: ParseErrorType,
@@ -60,7 +60,7 @@ impl NahidaParser {
   }
 
   pub fn parse_from_file(file: PathBuf) -> Result<Story> {
-    let text = fs::read_to_string(file.clone()).unwrap();
+    let text = fs::read_to_string(&file).unwrap();
     NahidaParser { base: file }.parse_text(&text)
   }
 }
@@ -158,10 +158,10 @@ impl NahidaParser {
     let mut alt = Tokenizer::new(&image.alt);
     let title = image.title.clone().unwrap_or_default();
     let mut title = Tokenizer::new(&title);
-    let url = self.base.join(&image.url);
 
     match alt.next() {
       Some("bg") => {
+        let url = self.base.join(&image.url);
         let transition = alt.parse_transition();
         let location = title.parse_location();
         let animation = title.parse_animation();
@@ -174,11 +174,8 @@ impl NahidaParser {
         })
       }
       Some("fig") => {
-        let remove = matches!(alt.peek(), Some(&"remove"));
-        if remove {
-          alt.next();
-        }
-
+        let url = self.base.join(&image.url);
+        let removal = alt.parse_remove();
         let transition = alt.parse_transition();
         let name = title.parse_name().ok_or_else(|| {
           ParseError::new_with_position(ParseErrorType::NoFigureName, image.position.clone())
@@ -192,6 +189,7 @@ impl NahidaParser {
           transition,
           animation,
           location,
+          removal,
         })
       }
       Some(ty) => Err(ParseError::new_with_position(
@@ -212,12 +210,23 @@ mod tests {
 
   #[test]
   fn test_parser() {
-    assert!(matches!(
-      NahidaParser::parse_from_text(r#"[x](./haid.md "title")"#),
-      Err(ParseError {
-        ty: ParseErrorType::InvalidLink,
-        ..
-      }),
-    ));
+    macro_rules! fail_test {
+      ($text:expr, $err:ident) => {
+        assert!(matches!(
+          NahidaParser::parse_from_text($text),
+          Err(ParseError {
+            ty: ParseErrorType::$err,
+            ..
+          }),
+        ))
+      };
+    }
+
+    fail_test!(
+      r#"
+      [x](./haid.md "title")
+      "#,
+      InvalidLink
+    );
   }
 }

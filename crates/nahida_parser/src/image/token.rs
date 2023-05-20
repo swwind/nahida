@@ -124,6 +124,14 @@ impl<'a> Tokenizer<'a> {
     self.token.next().and_then(|x| Some(x.to_string()))
   }
 
+  pub fn parse_remove(&mut self) -> bool {
+    let remove = matches!(self.token.peek(), Some(&"remove"));
+    if remove {
+      self.next();
+    }
+    remove
+  }
+
   // /// parse `<location> [ <animation> ]`
   // pub fn parse_location_animation(&mut self) -> Option<(Location, Option<Animation>)> {
   //   let location = self.parse_location();
