@@ -1,5 +1,6 @@
-use std::{iter::Peekable, str::SplitWhitespace, time::Duration};
+use std::{iter::Peekable, time::Duration};
 
+use log::warn;
 use nahida_core::{
   easing::EasingFunction,
   location::Location,
@@ -13,19 +14,27 @@ use super::{
 };
 
 pub struct Tokenizer<'a> {
-  token: Peekable<SplitWhitespace<'a>>,
+  token: Peekable<std::vec::IntoIter<&'a str>>,
 }
 
 impl<'a> Tokenizer<'a> {
   pub fn new(title: &'a str) -> Self {
+    let vec = title
+      .split_whitespace()
+      .flat_map(|x| {
+        if let Some(index) = x.find('/') {
+          vec![&x[..index], &x[index..index + 1], &x[index + 1..]]
+        } else {
+          vec![x]
+        }
+      })
+      .filter(|x| x.len() > 0)
+      .collect::<Vec<_>>();
+
     Self {
-      token: title.split_whitespace().peekable(),
+      token: vec.into_iter().peekable(),
     }
   }
-
-  // pub fn peek(&mut self) -> Option<&&'a str> {
-  //   self.token.peek()
-  // }
 
   pub fn next(&mut self) -> Option<&'a str> {
     self.token.next()
@@ -57,6 +66,11 @@ impl<'a> Tokenizer<'a> {
           None => break,
         }
         self.token.next();
+      }
+
+      // if have / but no size words
+      if size_words.len() == 0 {
+        warn!("possible missing size words");
       }
     }
 

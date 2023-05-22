@@ -7,6 +7,5 @@ edition = "2021"
 
 [dependencies]
 bevy = { version = "0.10.1", features = ["wayland"] }
-env_logger = "0.10.0"
 log = "0.4.17"
 nahida_bevy = {path="../../crates/nahida_bevy"}
