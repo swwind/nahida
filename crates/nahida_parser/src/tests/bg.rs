@@ -6,19 +6,19 @@ use nahida_core::{
   Location, Position, Size,
 };
 
-use crate::{steps, story, url, NahidaParser};
+use crate::{parse, steps, story};
 
 #[test]
 fn test_background() {
   let story = story![
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: None,
       animation: None,
       location: Location::default(),
     }],
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: None,
       animation: None,
       location: Location {
@@ -27,7 +27,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: None,
       animation: None,
       location: Location {
@@ -36,7 +36,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: None,
       animation: None,
       location: Location {
@@ -45,7 +45,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: None,
       animation: Some(Animation {
         ty: AnimationType::To {
@@ -63,7 +63,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: None,
       animation: Some(Animation {
         ty: AnimationType::To {
@@ -81,7 +81,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: Some(Transition {
         ty: TransitionType::FadeIn,
         time: Duration::from_secs(1),
@@ -91,7 +91,7 @@ fn test_background() {
       location: Location::default()
     }],
     steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
+      url: "./background.png".to_string(),
       transition: Some(Transition {
         ty: TransitionType::FadeOut,
         time: Duration::from_secs(5),
@@ -102,8 +102,5 @@ fn test_background() {
     }]
   ];
 
-  assert_eq!(
-    NahidaParser::parse_from_text(include_str!("bg.md")).unwrap(),
-    story
-  );
+  assert_eq!(parse!(include_str!("bg.md")), Ok(story));
 }

@@ -1,6 +1,6 @@
 use nahida_core::story::StoryAction;
 
-use crate::{steps, story, NahidaParser};
+use crate::{parse, steps, story};
 
 #[test]
 fn test_basic() {
@@ -27,8 +27,5 @@ fn test_basic() {
     }],
   ];
 
-  assert_eq!(
-    NahidaParser::parse_from_text(include_str!("basic.md")).unwrap(),
-    story
-  );
+  assert_eq!(parse!(include_str!("basic.md")), Ok(story));
 }

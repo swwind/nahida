@@ -1,7 +1,5 @@
 use std::time::Duration;
 
-use url::Url;
-
 use crate::{easing::EasingFunction, location::Location};
 
 #[derive(Debug, PartialEq)]
@@ -11,6 +9,7 @@ pub struct StoryStep {
 
 #[derive(Debug, PartialEq)]
 pub struct Story {
+  /// runtime steps
   pub steps: Vec<StoryStep>,
 }
 
@@ -24,7 +23,7 @@ pub enum StoryAction {
 
   /// changing the background
   Bg {
-    url: Url,
+    url: String,
     transition: Option<Transition>,
     animation: Option<Animation>,
     location: Location,
@@ -33,7 +32,7 @@ pub enum StoryAction {
   /// chaning the figure
   Fig {
     name: String,
-    url: Url,
+    url: String,
     transition: Option<Transition>,
     animation: Option<Animation>,
     location: Location,
@@ -41,13 +40,13 @@ pub enum StoryAction {
   },
 
   /// changing the BGM
-  Bgm { url: Url },
+  Bgm { url: String },
 
   /// playing some sfx
-  Sfx { url: Url },
+  Sfx { url: String },
 
   /// control flow
-  Navigate { url: Url, ret: bool },
+  Navigate { url: String, ret: bool },
 }
 
 #[derive(Debug, PartialEq)]

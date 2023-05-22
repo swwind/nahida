@@ -6,14 +6,14 @@ use nahida_core::{
   Location, Position, Size,
 };
 
-use crate::{steps, story, url, NahidaParser};
+use crate::{parse, steps, story};
 
 #[test]
 fn test_figure() {
   let story = story![
     steps![StoryAction::Fig {
       name: "nahida".to_string(),
-      url: url!("file:///figure.png"),
+      url: "./figure.png".to_string(),
       transition: None,
       animation: None,
       location: Location::default(),
@@ -21,7 +21,7 @@ fn test_figure() {
     }],
     steps![StoryAction::Fig {
       name: "nahida".to_string(),
-      url: url!("file:///figure.png"),
+      url: "./figure.png".to_string(),
       transition: Some(Transition {
         ty: TransitionType::FadeIn,
         time: Duration::from_secs(4),
@@ -45,7 +45,7 @@ fn test_figure() {
     }],
     steps![StoryAction::Fig {
       name: "nahida".to_string(),
-      url: url!("file:///figure.png"),
+      url: "./figure.png".to_string(),
       transition: Some(Transition {
         ty: TransitionType::ConicOut,
         time: Duration::from_secs(4),
@@ -57,8 +57,5 @@ fn test_figure() {
     }]
   ];
 
-  assert_eq!(
-    NahidaParser::parse_from_text(include_str!("fig.md")).unwrap(),
-    story
-  );
+  assert_eq!(parse!(include_str!("fig.md")), Ok(story));
 }
