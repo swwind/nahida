@@ -54,14 +54,17 @@ pub struct NahidaParser {
 
 type Result<T> = std::result::Result<T, ParseError>;
 
+#[cfg(test)]
 impl NahidaParser {
   pub fn parse_from_text(text: &str) -> Result<Story> {
     NahidaParser {
-      source: Url::parse("/index.md").unwrap(),
+      source: Url::parse("file:///index.md").unwrap(),
     }
     .parse_text(text)
   }
+}
 
+impl NahidaParser {
   pub fn parse_from_file(file: PathBuf) -> Result<Story> {
     let text = fs::read_to_string(&file).unwrap();
     NahidaParser {

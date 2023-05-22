@@ -1,219 +1,30 @@
-use std::time::Duration;
+mod basic;
+mod bg;
+mod fig;
 
-use nahida_core::{
-  easing::EasingFunction,
-  location::{Location, Position, Size},
-  story::{Animation, AnimationType, Story, StoryAction, StoryStep, Transition, TransitionType},
-};
-
-use crate::NahidaParser;
-
+#[macro_export]
 macro_rules! story {
   () => {
-    Story { steps: Vec::new() }
+    nahida_core::story::Story { steps: Vec::new() }
   };
   ($($x:expr),+ $(,)?) => {
-    Story { steps: vec![$($x),+] }
+    nahida_core::story::Story { steps: vec![$($x),+] }
   };
 }
 
+#[macro_export]
 macro_rules! steps {
   () => (
-    StoryStep { actions: Vec::new() }
+    nahida_core::story::StoryStep { actions: Vec::new() }
   );
   ($($x:expr),+ $(,)?) => (
-    StoryStep { actions: vec![$($x),+] }
+    nahida_core::story::StoryStep { actions: vec![$($x),+] }
   );
 }
 
+#[macro_export]
 macro_rules! url {
   ($url:expr) => {
     url::Url::parse($url).unwrap()
   };
-}
-
-#[test]
-fn test_basic() {
-  let story = story![
-    steps![StoryAction::Text {
-      name: Some("纳西妲".to_string()),
-      text: "「你好呀」".to_string()
-    }],
-    steps![StoryAction::Text {
-      name: Some("我".to_string()),
-      text: "「……」".to_string()
-    }],
-    steps![StoryAction::Text {
-      name: Some("我".to_string()),
-      text: "「……你好」".to_string()
-    }],
-    steps![StoryAction::Text {
-      name: None,
-      text: "突然有个羽毛球上前向我搭话，我莫名感觉到有些慌乱".to_string()
-    }],
-    steps![StoryAction::Text {
-      name: None,
-      text: "定睛一看，才发现是个少女".to_string()
-    }],
-  ];
-
-  assert_eq!(
-    NahidaParser::parse_from_text(include_str!("basic.md")).unwrap(),
-    story
-  );
-}
-
-#[test]
-fn test_background() {
-  let story = story![
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: None,
-      animation: None,
-      location: Location::default(),
-    }],
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: None,
-      animation: None,
-      location: Location {
-        position: Position(0.0, 0.5),
-        size: Size::default(),
-      },
-    }],
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: None,
-      animation: None,
-      location: Location {
-        position: Position(0.0, 0.5),
-        size: Size::Cover,
-      },
-    }],
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: None,
-      animation: None,
-      location: Location {
-        position: Position(0.0, 0.2),
-        size: Size::FixedHeight(0.3),
-      },
-    }],
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: None,
-      animation: Some(Animation {
-        ty: AnimationType::To {
-          location: Location {
-            position: Position(0.2, 0.8),
-            size: Size::FixedWidth(0.4)
-          }
-        },
-        time: Duration::from_secs(60),
-        easing: EasingFunction::Linear,
-      }),
-      location: Location {
-        position: Position(0.7, 1.0),
-        size: Size::Fixed(0.3, 0.2),
-      },
-    }],
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: None,
-      animation: Some(Animation {
-        ty: AnimationType::To {
-          location: Location {
-            position: Position(0.2, 0.0),
-            size: Size::FixedHeight(0.3)
-          }
-        },
-        time: Duration::from_secs(20),
-        easing: EasingFunction::ease_in_out(),
-      }),
-      location: Location {
-        position: Position(0.7, 1.0),
-        size: Size::Fixed(0.3, 0.2),
-      },
-    }],
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: Some(Transition {
-        ty: TransitionType::FadeIn,
-        time: Duration::from_secs(1),
-        easing: EasingFunction::Linear
-      }),
-      animation: None,
-      location: Location::default()
-    }],
-    steps![StoryAction::Bg {
-      url: url!("file:///background.png"),
-      transition: Some(Transition {
-        ty: TransitionType::FadeOut,
-        time: Duration::from_secs(5),
-        easing: EasingFunction::StepStart
-      }),
-      animation: None,
-      location: Location::default()
-    }]
-  ];
-
-  assert_eq!(
-    NahidaParser::parse_from_text(include_str!("bg.md")).unwrap(),
-    story
-  );
-}
-
-#[test]
-fn test_figure() {
-  let story = story![
-    steps![StoryAction::Fig {
-      name: "nahida".to_string(),
-      url: url!("file:///figure.png"),
-      transition: None,
-      animation: None,
-      location: Location::default(),
-      removal: false,
-    }],
-    steps![StoryAction::Fig {
-      name: "nahida".to_string(),
-      url: url!("file:///figure.png"),
-      transition: Some(Transition {
-        ty: TransitionType::FadeIn,
-        time: Duration::from_secs(4),
-        easing: EasingFunction::ease_out()
-      }),
-      animation: Some(Animation {
-        ty: AnimationType::To {
-          location: Location {
-            position: Position(0.2, 0.0),
-            size: Size::FixedHeight(0.3)
-          }
-        },
-        time: Duration::from_secs(20),
-        easing: EasingFunction::ease_in_out()
-      }),
-      location: Location {
-        position: Position(0.7, 1.0),
-        size: Size::Fixed(0.3, 0.2)
-      },
-      removal: false,
-    }],
-    steps![StoryAction::Fig {
-      name: "nahida".to_string(),
-      url: url!("file:///figure.png"),
-      transition: Some(Transition {
-        ty: TransitionType::ConicOut,
-        time: Duration::from_secs(4),
-        easing: EasingFunction::Linear
-      }),
-      animation: None,
-      location: Location::default(),
-      removal: true,
-    }]
-  ];
-
-  assert_eq!(
-    NahidaParser::parse_from_text(include_str!("fig.md")).unwrap(),
-    story
-  );
 }
