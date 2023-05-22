@@ -39,7 +39,7 @@ pub fn parse_size(input: &[SizeKeyword]) -> Option<Size> {
       match ty {
         Contain => Some(Size::Contain),
         Cover => Some(Size::Cover),
-        Fill => Some(Size::Fill),
+        Fill => Some(Size::Fixed(1.0, 1.0)),
         Auto => Some(Size::Contain),
         Percent(w) => Some(Size::FixedWidth(w)),
       }
@@ -82,7 +82,7 @@ mod tests {
   fn test_parse_size() {
     assert_eq!(parse("contain"), Some(Size::Contain));
     assert_eq!(parse("cover"), Some(Size::Cover));
-    assert_eq!(parse("fill"), Some(Size::Fill));
+    assert_eq!(parse("fill"), Some(Size::Fixed(1.0, 1.0)));
     assert_eq!(parse("auto"), Some(Size::Contain));
     assert_eq!(parse("20%"), Some(Size::FixedWidth(0.2)));
 

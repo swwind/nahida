@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 bevy = { version = "0.10.1", features = ["wayland"] }
+url = "2.3.1"
+nahida_core = {path = "../nahida_core"}
+nahida_parser = {path = "../nahida_parser"}

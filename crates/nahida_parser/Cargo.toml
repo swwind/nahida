@@ -12,3 +12,4 @@ markdown = "1.0.0-alpha.9"
 nahida_core = {path = "../nahida_core"}
 thiserror = "1.0.40"
 url = "2.3.1"
+urlencoding = "2.1.2"

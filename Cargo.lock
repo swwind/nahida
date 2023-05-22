@@ -2210,6 +2210,9 @@ name = "nahida_bevy"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "nahida_core",
+ "nahida_parser",
+ "url",
 ]
 
 [[package]]
@@ -2229,6 +2232,7 @@ dependencies = [
  "nahida_core",
  "thiserror",
  "url",
+ "urlencoding",
 ]
 
 [[package]]

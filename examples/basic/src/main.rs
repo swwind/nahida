@@ -1,11 +1,13 @@
 use bevy::prelude::*;
-use nahida_bevy::NahidaPlugin;
+use nahida_bevy::{NahidaEntryPoint, NahidaPlugin, Url};
 
 fn main() {
   env_logger::init();
 
+  let entrance = Url::parse("file:///home/swwind/Repositories/nahida/assets/story.md").unwrap();
+
   App::new()
-    .add_plugins(DefaultPlugins)
+    .insert_resource(NahidaEntryPoint(entrance))
     .add_plugin(NahidaPlugin)
     .run();
 }
