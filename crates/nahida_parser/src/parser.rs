@@ -6,7 +6,6 @@ use markdown::{
 };
 use nahida_core::story::{Story, StoryAction, StoryStep};
 use thiserror::Error;
-use url::Url;
 
 use crate::image::Tokenizer;
 
@@ -26,8 +25,6 @@ pub enum ParseErrorType {
   NoFigureName,
   #[error("invalid wait time: {0}")]
   InvalidWaitTime(String),
-  #[error("invalid url: {0}")]
-  InvalidUrl(String),
 }
 
 #[derive(Debug, Error, PartialEq)]
