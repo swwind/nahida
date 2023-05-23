@@ -1,4 +1,6 @@
-use bevy::{prelude::*, utils::HashMap};
+use std::collections::HashMap;
+
+use bevy::prelude::*;
 use nahida_core::story::StoryAction;
 
 use crate::{asset::story::StoryAsset, NahidaEntryPoint};
@@ -10,9 +12,8 @@ pub struct LoadingPlugin;
 impl Plugin for LoadingPlugin {
   fn build(&self, app: &mut App) {
     app
-      .init_resource::<LoadingText>()
       .init_resource::<NahidaFonts>()
-      .init_resource::<NahidaLoadingQueue>()
+      .init_resource::<NahidaLoadingState>()
       .init_resource::<NahidaResources>()
       .add_systems(
         (sync_loading_text, load_resource_recursive).in_set(OnUpdate(NahidaState::Loading)),
@@ -55,25 +56,12 @@ fn destroy_loading_text(mut command: Commands, query: Query<Entity, With<Loading
   }
 }
 
-#[derive(Resource)]
-pub struct LoadingText {
-  pub text: String,
-}
-
-impl Default for LoadingText {
-  fn default() -> Self {
-    Self {
-      text: String::from("Loading..."),
-    }
-  }
-}
-
 fn sync_loading_text(
-  loading_text: Res<LoadingText>,
+  loading_state: Res<NahidaLoadingState>,
   mut query: Query<&mut Text, With<LoadingComponent>>,
 ) {
   for mut text in query.iter_mut() {
-    text.sections[0].value = loading_text.text.clone();
+    text.sections[0].value = loading_state.logs.join("\n");
   }
 }
 
@@ -88,8 +76,9 @@ fn setup_load_fonts(mut fonts: ResMut<NahidaFonts>, asset_server: Res<AssetServe
 
 /// Loading queue
 #[derive(Resource, Default)]
-pub struct NahidaLoadingQueue {
-  story: HashMap<String, Handle<StoryAsset>>,
+pub struct NahidaLoadingState {
+  logs: Vec<String>,
+  queue: HashMap<String, Handle<StoryAsset>>,
 }
 
 /// All resources parsed from entry point
@@ -102,44 +91,49 @@ pub struct NahidaResources {
 
 fn move_entry_point_to_loading_queue(
   entry_point: Res<NahidaEntryPoint>,
-  mut loading_queue: ResMut<NahidaLoadingQueue>,
+  mut loading_state: ResMut<NahidaLoadingState>,
   asset_server: Res<AssetServer>,
 ) {
   let story = asset_server.load(&entry_point.0);
-  info!("Loading: {}", entry_point.0);
-  loading_queue.story.insert(entry_point.0.clone(), story);
+  let log = format!("Loading: {}", entry_point.0);
+  info!(log);
+  loading_state.logs.push(log);
+  loading_state.queue.insert(entry_point.0.clone(), story);
 }
 
 fn load_resource_recursive(
-  mut loading_queue: ResMut<NahidaLoadingQueue>,
+  mut loading_state: ResMut<NahidaLoadingState>,
   mut loaded_resource: ResMut<NahidaResources>,
   asset: Res<Assets<StoryAsset>>,
   asset_server: Res<AssetServer>,
 ) {
-  let mut removal = Vec::new();
-  let mut insert = Vec::new();
+  let mut removes = Vec::new();
+  let mut inserts = Vec::new();
+  let mut logs = Vec::new();
 
-  for (path, handle) in loading_queue.story.iter() {
+  for (path, handle) in loading_state.queue.iter() {
+    // check if loaded
     if let Some(story) = asset.get(handle) {
-      removal.push(path.clone());
-      info!("Loaded: {path}");
+      removes.push(path.clone());
 
+      // find assets recursive
       for step in &story.story.steps {
         for action in &step.actions {
           match action {
             StoryAction::Bg { url, .. } | StoryAction::Fig { url, .. } => {
-              info!("Loading Image: {}", url);
+              logs.push(format!("Loading Image: {}", url));
               let image = asset_server.load(url);
               loaded_resource.image.insert(url.clone(), image);
             }
             StoryAction::Bgm { url } | StoryAction::Sfx { url } => {
-              info!("Loading Audio: {}", url);
+              logs.push(format!("Loading Audio: {}", url));
               let audio = asset_server.load(url);
               loaded_resource.audio.insert(url.clone(), audio);
             }
             StoryAction::Navigate { url, .. } => {
+              logs.push(format!("Loading: {}", url));
               let story = asset_server.load(url);
-              insert.push((url.clone(), story));
+              inserts.push((url.clone(), story));
             }
             _ => {}
           }
@@ -148,13 +142,16 @@ fn load_resource_recursive(
     }
   }
 
-  for key in removal {
-    if let Some(handle) = loading_queue.story.remove(&key) {
+  for key in removes {
+    if let Some(handle) = loading_state.queue.remove(&key) {
       loaded_resource.story.insert(key, handle);
     }
   }
-
-  for (key, value) in insert {
-    loading_queue.story.insert(key, value);
+  for (key, value) in inserts {
+    loading_state.queue.insert(key, value);
+  }
+  for log in logs {
+    info!(log);
+    loading_state.logs.push(log);
   }
 }
