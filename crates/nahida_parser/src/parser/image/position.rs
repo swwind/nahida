@@ -155,9 +155,7 @@ pub fn parse_position(input: &[PositionKeyword]) -> Option<Position> {
 mod tests {
   use nahida_core::location::Position;
 
-  use crate::image::position::parse_position;
-
-  use super::parse_position_keyword;
+  use super::{parse_position, parse_position_keyword};
 
   fn parse(s: &str) -> Option<Position> {
     parse_position(

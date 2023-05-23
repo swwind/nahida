@@ -1,4 +1,4 @@
-![bg](./tree.png "center / cover")
+![bg](./tree.png "center /")
 
 # Nahida
 

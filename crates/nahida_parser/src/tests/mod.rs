@@ -25,6 +25,6 @@ macro_rules! steps {
 #[macro_export]
 macro_rules! parse {
   ($text:expr) => {
-    $crate::parser::NahidaParser.parse_text($text)
+    $crate::parser::NahidaParser::default().parse_text($text)
   };
 }

@@ -66,9 +66,7 @@ pub fn parse_size(input: &[SizeKeyword]) -> Option<Size> {
 mod tests {
   use nahida_core::location::Size;
 
-  use crate::image::size::parse_size;
-
-  use super::parse_size_keyword;
+  use super::{parse_size, parse_size_keyword};
 
   fn parse(s: &str) -> Option<Size> {
     parse_size(
