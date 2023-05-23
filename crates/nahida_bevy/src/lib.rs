@@ -1,8 +1,10 @@
+use asset::NahidaAssetPlugin;
 use bevy::{prelude::*, window::WindowResized};
 
-use loader::{StoryAsset, StoryAssetLoader};
+use state::NahidaStatePlugin;
 
-mod loader;
+mod asset;
+mod state;
 
 #[derive(Resource)]
 pub struct NahidaEntryPoint(pub String);
@@ -13,14 +15,11 @@ impl Plugin for NahidaPlugin {
   fn build(&self, app: &mut App) {
     app
       .add_plugins(DefaultPlugins)
-      .init_resource::<CurrentStory>()
-      .add_asset::<StoryAsset>()
-      .init_asset_loader::<StoryAssetLoader>()
+      .add_plugin(NahidaStatePlugin)
+      .add_plugin(NahidaAssetPlugin)
       .insert_resource(ClearColor(Color::BLACK))
       .insert_resource(WindowSize(0.0, 0.0))
       .add_startup_system(setup_camera)
-      .add_startup_system(debug_spawn_background)
-      .add_startup_system(setup_current_story)
       .add_system(sync_window_size)
       .add_system(sync_transform_with_location.after(sync_window_size));
   }
@@ -28,34 +27,6 @@ impl Plugin for NahidaPlugin {
 
 fn setup_camera(mut command: Commands) {
   command.spawn(Camera2dBundle::default());
-}
-
-fn debug_spawn_background(mut command: Commands, asset_server: Res<AssetServer>) {
-  command.spawn((
-    Location {
-      location: nahida_core::Location {
-        position: nahida_core::Position(0.5, 0.5),
-        size: nahida_core::Size::Fixed(1.0, 1.0),
-      },
-      ..Default::default()
-    },
-    SpriteBundle {
-      texture: asset_server.load("tree.png"),
-      transform: Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(0.5)),
-      ..Default::default()
-    },
-  ));
-}
-
-#[derive(Resource, Default)]
-pub struct CurrentStory(Handle<StoryAsset>);
-
-fn setup_current_story(
-  mut current_story: ResMut<CurrentStory>,
-  entry_point: Res<NahidaEntryPoint>,
-  asset_server: Res<AssetServer>,
-) {
-  current_story.0 = asset_server.load(&entry_point.0);
 }
 
 #[derive(Component, Default, Debug, Clone)]
