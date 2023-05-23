@@ -35,17 +35,23 @@ pub struct LoadingComponent;
 
 fn setup_loading_text(mut command: Commands, fonts: Res<NahidaFonts>) {
   command.spawn((
-    Text2dBundle {
-      text: Text::from_section(
-        "",
-        TextStyle {
-          font: fonts.hanyi.clone(),
-          font_size: 32.0,
-          color: Color::WHITE,
-        },
-      ),
+    TextBundle::from_section(
+      "Loading...",
+      TextStyle {
+        font: fonts.hanyi.clone(),
+        font_size: 24.0,
+        color: Color::WHITE,
+      },
+    )
+    .with_style(Style {
+      position_type: PositionType::Absolute,
+      position: UiRect {
+        left: Val::Px(20.0),
+        bottom: Val::Px(20.0),
+        ..Default::default()
+      },
       ..Default::default()
-    },
+    }),
     LoadingComponent,
   ));
 }
@@ -78,7 +84,7 @@ fn setup_load_fonts(mut fonts: ResMut<NahidaFonts>, asset_server: Res<AssetServe
 #[derive(Resource, Default)]
 pub struct NahidaLoadingState {
   logs: Vec<String>,
-  queue: HashMap<String, Handle<StoryAsset>>,
+  queue: Vec<String>,
 }
 
 /// All resources parsed from entry point
@@ -92,30 +98,32 @@ pub struct NahidaResources {
 fn move_entry_point_to_loading_queue(
   entry_point: Res<NahidaEntryPoint>,
   mut loading_state: ResMut<NahidaLoadingState>,
+  mut loaded_resource: ResMut<NahidaResources>,
   asset_server: Res<AssetServer>,
 ) {
-  let story = asset_server.load(&entry_point.0);
-  let log = format!("Loading: {}", entry_point.0);
-  info!(log);
-  loading_state.logs.push(log);
-  loading_state.queue.insert(entry_point.0.clone(), story);
+  let url = &entry_point.0;
+  loading_state.logs.push(format!("Loading: {}", url));
+  let story = asset_server.load(url);
+  loaded_resource.story.insert(url.clone(), story);
+  loading_state.queue.push(url.clone());
 }
 
 fn load_resource_recursive(
   mut loading_state: ResMut<NahidaLoadingState>,
   mut loaded_resource: ResMut<NahidaResources>,
-  asset: Res<Assets<StoryAsset>>,
+  asset_story: Res<Assets<StoryAsset>>,
   asset_server: Res<AssetServer>,
 ) {
-  let mut removes = Vec::new();
   let mut inserts = Vec::new();
   let mut logs = Vec::new();
 
-  for (path, handle) in loading_state.queue.iter() {
-    // check if loaded
-    if let Some(story) = asset.get(handle) {
-      removes.push(path.clone());
+  loading_state.queue.retain(|path| {
+    let handle = loaded_resource.story.get(path);
+    let asset = handle.and_then(|x| asset_story.get(x));
 
+    // check if loaded
+
+    if let Some(story) = asset {
       // find assets recursive
       for step in &story.story.steps {
         for action in &step.actions {
@@ -133,25 +141,18 @@ fn load_resource_recursive(
             StoryAction::Navigate { url, .. } => {
               logs.push(format!("Loading: {}", url));
               let story = asset_server.load(url);
-              inserts.push((url.clone(), story));
+              loaded_resource.story.insert(url.clone(), story);
+              inserts.push(url.clone());
             }
             _ => {}
           }
         }
       }
     }
-  }
 
-  for key in removes {
-    if let Some(handle) = loading_state.queue.remove(&key) {
-      loaded_resource.story.insert(key, handle);
-    }
-  }
-  for (key, value) in inserts {
-    loading_state.queue.insert(key, value);
-  }
-  for log in logs {
-    info!(log);
-    loading_state.logs.push(log);
-  }
+    asset.is_none()
+  });
+
+  loading_state.queue.append(&mut inserts);
+  loading_state.logs.append(&mut logs);
 }
