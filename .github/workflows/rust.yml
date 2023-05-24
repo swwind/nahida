@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install deps
-        run: sudo apt install -y clang mold libwayland-dev libxkbcommon-dev librust-alsa-sys-dev
+        run: sudo apt install -y clang mold libwayland-dev libxkbcommon-dev librust-alsa-sys-dev libudev-dev
       - name: Run tests
         run: cargo test --release
       - name: Build
