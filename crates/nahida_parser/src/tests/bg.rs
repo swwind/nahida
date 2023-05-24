@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{path::PathBuf, time::Duration};
 
 use nahida_core::{
   easing::EasingFunction,
@@ -12,13 +12,13 @@ use crate::{parse, steps, story};
 fn test_background() {
   let story = story![
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: None,
       animation: None,
       location: Location::default(),
     }],
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: None,
       animation: None,
       location: Location {
@@ -27,7 +27,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: None,
       animation: None,
       location: Location {
@@ -36,7 +36,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: None,
       animation: None,
       location: Location {
@@ -45,7 +45,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: None,
       animation: Some(Animation {
         ty: AnimationType::To {
@@ -63,7 +63,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: None,
       animation: Some(Animation {
         ty: AnimationType::To {
@@ -81,7 +81,7 @@ fn test_background() {
       },
     }],
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: Some(Transition {
         ty: TransitionType::FadeIn,
         time: Duration::from_secs(1),
@@ -91,7 +91,7 @@ fn test_background() {
       location: Location::default()
     }],
     steps![StoryAction::Bg {
-      url: "./background.png".to_string(),
+      url: PathBuf::from("./background.png"),
       transition: Some(Transition {
         ty: TransitionType::FadeOut,
         time: Duration::from_secs(5),

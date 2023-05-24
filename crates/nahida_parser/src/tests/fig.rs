@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{path::PathBuf, time::Duration};
 
 use nahida_core::{
   easing::EasingFunction,
@@ -13,7 +13,7 @@ fn test_figure() {
   let story = story![
     steps![StoryAction::Fig {
       name: "nahida".to_string(),
-      url: "./figure.png".to_string(),
+      url: PathBuf::from("./figure.png"),
       transition: None,
       animation: None,
       location: Location::default(),
@@ -21,7 +21,7 @@ fn test_figure() {
     }],
     steps![StoryAction::Fig {
       name: "nahida".to_string(),
-      url: "./figure.png".to_string(),
+      url: PathBuf::from("./figure.png"),
       transition: Some(Transition {
         ty: TransitionType::FadeIn,
         time: Duration::from_secs(4),
@@ -45,7 +45,7 @@ fn test_figure() {
     }],
     steps![StoryAction::Fig {
       name: "nahida".to_string(),
-      url: "./figure.png".to_string(),
+      url: PathBuf::from("./figure.png"),
       transition: Some(Transition {
         ty: TransitionType::ConicOut,
         time: Duration::from_secs(4),

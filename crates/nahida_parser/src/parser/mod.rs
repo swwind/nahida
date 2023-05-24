@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{path::PathBuf, time::Duration};
 
 use markdown::{
   mdast::{Heading, Image, Link, Node, Paragraph, Root, Text},
@@ -131,11 +131,11 @@ impl NahidaParser {
 
     match text.next() {
       Some("goto") => Ok(StoryAction::Navigate {
-        url: link.url.clone(),
+        url: PathBuf::from(&link.url),
         ret: false,
       }),
       Some("end") => Ok(StoryAction::Navigate {
-        url: link.url.clone(),
+        url: PathBuf::from(&link.url),
         ret: true,
       }),
       Some("wait") => Ok(StoryAction::Wait {
@@ -157,7 +157,7 @@ impl NahidaParser {
     let mut alt = Tokenizer::new(&image.alt);
     let title = image.title.clone().unwrap_or_default();
     let mut title = Tokenizer::new(&title);
-    let url = image.url.clone();
+    let url = PathBuf::from(&image.url);
 
     match alt.next() {
       Some("bg") => Ok(StoryAction::Bg {
