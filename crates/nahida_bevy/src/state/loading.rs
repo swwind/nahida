@@ -68,11 +68,16 @@ impl Plugin for LoadingPlugin {
       .init_resource::<NahidaLoadingState>()
       .init_resource::<NahidaResources>()
       .add_systems(
-        (setup_loading_text, setup_load_fonts, load_entry_point)
+        (setup_loading_text, setup_load_fonts, setup_load_entry_point)
           .in_schedule(OnEnter(NahidaState::Loading)),
       )
       .add_systems(
-        (sync_loading_text, load_resource_recursive).in_set(OnUpdate(NahidaState::Loading)),
+        (
+          sync_loading_text,
+          load_resource_recursive,
+          goto_menu_after_loading,
+        )
+          .in_set(OnUpdate(NahidaState::Loading)),
       )
       .add_system(destroy_loading_text.in_schedule(OnExit(NahidaState::Loading)));
   }
@@ -110,6 +115,15 @@ fn destroy_loading_text(mut command: Commands, query: Query<Entity, With<Loading
   }
 }
 
+fn goto_menu_after_loading(
+  loading_state: Res<NahidaLoadingState>,
+  mut next_state: ResMut<NextState<NahidaState>>,
+) {
+  if loading_state.queue.is_empty() {
+    *next_state = NextState(Some(NahidaState::Menu));
+  }
+}
+
 fn sync_loading_text(
   loading_state: Res<NahidaLoadingState>,
   mut query: Query<&mut Text, With<LoadingComponent>>,
@@ -121,7 +135,7 @@ fn sync_loading_text(
 
 #[derive(Resource, Default)]
 pub struct NahidaFonts {
-  hanyi: Handle<Font>,
+  pub hanyi: Handle<Font>,
 }
 
 fn setup_load_fonts(mut fonts: ResMut<NahidaFonts>, asset_server: Res<AssetServer>) {
@@ -143,7 +157,7 @@ pub struct NahidaResources {
   audio: HashMap<PathBuf, Handle<AudioSource>>,
 }
 
-fn load_entry_point(
+fn setup_load_entry_point(
   entry_point: Res<NahidaEntryPoint>,
   mut loading_state: ResMut<NahidaLoadingState>,
   mut loaded_resource: ResMut<NahidaResources>,
