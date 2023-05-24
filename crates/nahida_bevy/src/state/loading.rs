@@ -164,7 +164,8 @@ fn setup_load_entry_point(
   asset_server: Res<AssetServer>,
 ) {
   let url = PathBuf::from(&entry_point.0);
-  loading_state.logs.push(format!("Loading: {:?}", url));
+  loading_state.logs.push(format!("Loading: {url:?}"));
+  info!("Loading: {url:?}");
   let story = asset_server.load(url.clone());
   loaded_resource.story.insert(url.clone(), story);
   loading_state.queue.push(url.clone());
